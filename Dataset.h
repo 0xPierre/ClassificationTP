@@ -72,3 +72,16 @@ void Dataset_destroy(Dataset *data);
  * @see SubproblemClass
  */
 Subproblem *Dataset_getSubproblem(Dataset *data);
+
+/**
+ * @brief Create a new Subproblem.
+ *
+ * This function creates a new Subproblem with the given parameters.
+ *
+ * @param maximumCapacity The maximum capacity of the Subproblem's instance array.
+ * @param featureCount The number of features in the Subproblem.
+ * @param classCount The number of classes in the Subproblem.
+ *
+ * @return A pointer to the newly created Subproblem.
+ */
+Subproblem *Subproblem_create(int maximumCapacity, int featureCount, int classCount);
