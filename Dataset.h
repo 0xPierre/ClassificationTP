@@ -92,3 +92,28 @@ Subproblem *Subproblem_create(int maximumCapacity, int featureCount, int classCo
  * @param subproblem The Subproblem object to destroy.
  */
 void Subproblem_destroy(Subproblem *subproblem);
+
+
+/**
+ * @brief Inserts the address of an instance into the Subproblem.
+ *
+ * Inserts the instance address both in the main array and the array dedicated to the
+ * instance's class. Updates the count of considered instances in the Subproblem.
+ *
+ * @param subproblem A pointer to the Subproblem structure.
+ * @param instance A pointer to the Instance structure to be inserted.
+ */
+void Subproblem_insert(Subproblem *subproblem, Instance *instance);
+
+
+/**
+ * @brief Prints information about a Subproblem.
+ * @param subproblem The Subproblem to be printed.
+ * @return void
+ *
+ * This function prints the following information about the given Subproblem:
+ * - The number of classes and features in the dataset.
+ * - The size and capacity of the Subproblem.
+ * - The number of instances for each class.
+ **/
+void Subproblem_print(Subproblem *subproblem);

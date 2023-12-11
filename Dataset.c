@@ -94,20 +94,58 @@ Subproblem *Subproblem_create(int maximumCapacity, int featureCount, int classCo
     return subproblem;
 }
 
-/**
- * @brief Destroys a Subproblem object and frees the associated memory.
- *
- * @param subproblem The Subproblem object to destroy.
- */
 void Subproblem_destroy(Subproblem *subproblem) {
     if (subproblem == NULL) {
         return;
     }
-    for (int i = 0; i < subproblem->instanceCount; i++) {
-        free(subproblem->instances[i]);
-        free(subproblem->classes->instances[i]);
-    }
+
     free(subproblem->instances);
-    free(subproblem->classes->instances);
+
+    // Deallocate memory for instances in each class array
+    for (int i = 0; i < subproblem->classCount; i++) {
+        SubproblemClass *classArray = &(subproblem->classes[i]);
+        free(classArray->instances);
+    }
+
+    // Deallocate memory for the array of SubproblemClass structures
+    free(subproblem->classes);
+
     free(subproblem);
+}
+
+void Subproblem_insert(Subproblem *subproblem, Instance *instance) {
+    if (subproblem->instanceCount < subproblem->capacity) {
+        subproblem->instances[subproblem->instanceCount] = instance;
+
+        subproblem->instanceCount++;
+
+        // Find the class ID of the instance
+        int classID = instance->classID;
+
+        // Check if the class ID is valid
+        if (classID >= 0 && classID < subproblem->classCount) {
+            // Insert the instance into the array dedicated to its class
+            SubproblemClass *classArray = &(subproblem->classes[classID]);
+            classArray->instances = realloc(classArray->instances, (classArray->instanceCount + 1) * sizeof(Instance *));
+            classArray->instances[classArray->instanceCount] = instance;
+            classArray->instanceCount++;
+        } else {
+            printf("Error: Invalid class ID %d for instance.\n", classID);
+        }
+    } else {
+        printf("Error: Subproblem capacity exceeded. Unable to insert instance.\n");
+    }
+}
+
+void Subproblem_print(Subproblem *subproblem) {
+    if (subproblem == NULL) {
+        return;
+    }
+
+    printf("Dataset with %d classes of %d features\n", subproblem->classCount, subproblem->featureCount);
+    printf("Size = %d, capacity = %d\n", subproblem->instanceCount, subproblem->capacity);
+
+    for (int i = 0; i < subproblem->classCount; i++) {
+        printf("- class %d: %d instances\n", i, subproblem->classes[i].instanceCount);
+    }
 }
