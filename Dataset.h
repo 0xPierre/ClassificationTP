@@ -85,3 +85,10 @@ Subproblem *Dataset_getSubproblem(Dataset *data);
  * @return A pointer to the newly created Subproblem.
  */
 Subproblem *Subproblem_create(int maximumCapacity, int featureCount, int classCount);
+
+/**
+ * @brief Destroys a Subproblem object and frees the associated memory.
+ *
+ * @param subproblem The Subproblem object to destroy.
+ */
+void Subproblem_destroy(Subproblem *subproblem);

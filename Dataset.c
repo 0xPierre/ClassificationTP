@@ -93,3 +93,21 @@ Subproblem *Subproblem_create(int maximumCapacity, int featureCount, int classCo
 
     return subproblem;
 }
+
+/**
+ * @brief Destroys a Subproblem object and frees the associated memory.
+ *
+ * @param subproblem The Subproblem object to destroy.
+ */
+void Subproblem_destroy(Subproblem *subproblem) {
+    if (subproblem == NULL) {
+        return;
+    }
+    for (int i = 0; i < subproblem->instanceCount; i++) {
+        free(subproblem->instances[i]);
+        free(subproblem->classes->instances[i]);
+    }
+    free(subproblem->instances);
+    free(subproblem->classes->instances);
+    free(subproblem);
+}
