@@ -32,3 +32,14 @@ Dataset *Dataset_readFromFile(char *filename) {
     fclose(file);
     return dataset;
 }
+
+void Dataset_destroy(Dataset *data) {
+    if (data == NULL) {
+        return;
+    }
+    for (int i = 0; i < data->instanceCount; i++) {
+        free(data->instances[i].values);
+    }
+    free(data->instances);
+    free(data);
+}

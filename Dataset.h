@@ -42,3 +42,15 @@ typedef struct sSubproblem{
  * @return A pointer to the created Dataset structure, or NULL if an error occurs.
  */
 Dataset* Dataset_readFromFile(char* filename);
+
+
+/**
+ * @brief Destroys a Dataset object and frees up all memory.
+ *
+ * This function will destroy the given Dataset object and free up all the memory
+ * allocated for it. It ensures that all instances and their values are also freed
+ * before releasing the memory occupied by the Dataset object itself.
+ *
+ * @param data The Dataset object to be destroyed.
+ */
+void Dataset_destroy(Dataset *data);
