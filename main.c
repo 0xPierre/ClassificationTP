@@ -1,8 +1,17 @@
-#include <stdlib.h>
-#include <stdio.h>
+#include "Settings.h"
+
 
 int main()
 {
-    printf("Hello world");
+    printf("Process ended successfully\n");
+    Dataset* trainData = Dataset_readFromFile("Datasets/PENDIGITS_train.txt");
+
+    Subproblem* subproblem = Dataset_getSubproblem(trainData);
+    Subproblem_print(subproblem);
+
+
+    Subproblem_destroy(subproblem);
+    Dataset_destroy(trainData);
+    printf("Process ended successfully\n");
 }
 
