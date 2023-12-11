@@ -54,3 +54,21 @@ Dataset* Dataset_readFromFile(char* filename);
  * @param data The Dataset object to be destroyed.
  */
 void Dataset_destroy(Dataset *data);
+
+/**
+ * @brief Retrieves a subproblem from a dataset.
+ *
+ * This function creates a subproblem based on the specified dataset. The subproblem is a subset of the original dataset, containing the references to the instances from the dataset
+*.
+ *
+ * @param[in] data The dataset from which to create the subproblem.
+ * @return A pointer to the created subproblem.
+ *         - If the data is NULL, an error message is printed and NULL is returned.
+ *         - If the memory allocation fails, NULL is returned.
+ *
+ * @see Dataset
+ * @see Subproblem
+ * @see Instance
+ * @see SubproblemClass
+ */
+Subproblem *Dataset_getSubproblem(Dataset *data);

@@ -43,3 +43,34 @@ void Dataset_destroy(Dataset *data) {
     free(data->instances);
     free(data);
 }
+
+Subproblem *Dataset_getSubproblem(Dataset *data) {
+    if (data == NULL) {
+        printf("ERROR: Data can't be null...\n");
+        return NULL;
+    }
+    Subproblem *subproblem = (Subproblem *) malloc(sizeof(Subproblem));
+
+    subproblem->instanceCount = data->instanceCount;
+    subproblem->featureCount = data->featureCount;
+    subproblem->classCount = data->classCount;
+
+    subproblem->instances = (Instance **) malloc(data->instanceCount * sizeof(Instance *));
+
+    for (int i = 0; i < data->instanceCount; i++) {
+        subproblem->instances[i] = &data->instances[i];
+    }
+
+    subproblem->capacity = data->instanceCount; // Set capacity to the initial instance count
+    subproblem->featureCount = data->featureCount;
+    subproblem->classCount = data->classCount;
+
+    subproblem->classes = (SubproblemClass *) malloc(data->classCount * sizeof(SubproblemClass));
+
+    for (int i = 0; i < data->classCount; i++) {
+        subproblem->classes[i].instanceCount = 0;
+        subproblem->classes[i].instances = NULL;
+    }
+
+    return subproblem;
+}
