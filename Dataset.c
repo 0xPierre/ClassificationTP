@@ -65,7 +65,7 @@ Subproblem* Subproblem_create(int maximumCapacity, int featureCount, int classCo
 	// Alloue le tableau de pointeurs de sous class
 	subproblem->classes = (SubproblemClass*)calloc(classCount, sizeof(SubproblemClass));
 
-	if (subproblem->instances == NULL || subproblem->classes == NULL) {
+	if (subproblem->classes == NULL) {
 		printf("Subproblem Memory allocation failed - classes\n");
 		return NULL;
 	}
