@@ -12,18 +12,20 @@ Dataset *Dataset_readFromFile(char *filename) {
     if (file == NULL) {
         printf("An error occurred while reading the file...\n");
         return NULL;
-    };
+    }
 
     Dataset *dataset = calloc(1, sizeof(Dataset));
 
-    fscanf(file, "%d", &dataset->instanceCount);
-    fscanf(file, "%d", &dataset->classCount);
-    fscanf(file, "%d", &dataset->featureCount);
-
+    fscanf(file,
+           "%d %d %d",
+           &dataset->instanceCount,
+           &dataset->classCount,
+           &dataset->featureCount);
 
     dataset->instances = calloc(dataset->instanceCount, sizeof(Instance));
     for (int i = 0; i < dataset->instanceCount; i++) {
         dataset->instances[i].values = (int *) calloc(dataset->featureCount, sizeof(int));
+        dataset->instances[i].classID = i;
         for (int y = 0; y < dataset->featureCount; y++) {
             fscanf(file, "%d", &dataset->instances[i].values[y]);
         }
@@ -76,15 +78,15 @@ Subproblem *Dataset_getSubproblem(Dataset *data) {
 }
 
 Subproblem *Subproblem_create(int maximumCapacity, int featureCount, int classCount) {
-    Subproblem *subproblem = (Subproblem *)malloc(sizeof(Subproblem));
+    Subproblem *subproblem = (Subproblem *) malloc(sizeof(Subproblem));
 
-    subproblem->instances = (Instance **)malloc(maximumCapacity * sizeof(Instance *));
+    subproblem->instances = (Instance **) malloc(maximumCapacity * sizeof(Instance *));
     subproblem->instanceCount = 0;
     subproblem->capacity = maximumCapacity;
     subproblem->featureCount = featureCount;
     subproblem->classCount = classCount;
 
-    subproblem->classes = (SubproblemClass *)malloc(classCount * sizeof(SubproblemClass));
+    subproblem->classes = (SubproblemClass *) malloc(classCount * sizeof(SubproblemClass));
 
     for (int i = 0; i < classCount; i++) {
         subproblem->classes[i].instanceCount = 0;
@@ -126,7 +128,8 @@ void Subproblem_insert(Subproblem *subproblem, Instance *instance) {
         if (classID >= 0 && classID < subproblem->classCount) {
             // Insert the instance into the array dedicated to its class
             SubproblemClass *classArray = &(subproblem->classes[classID]);
-            classArray->instances = realloc(classArray->instances, (classArray->instanceCount + 1) * sizeof(Instance *));
+            classArray->instances = realloc(classArray->instances,
+                                            (classArray->instanceCount + 1) * sizeof(Instance *));
             classArray->instances[classArray->instanceCount] = instance;
             classArray->instanceCount++;
         } else {
