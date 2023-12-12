@@ -130,9 +130,12 @@
     <ClCompile Include="Dataset.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="Dataset.h" />
+    <ClCompile Include="Split.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DecisionTree.h" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="Split.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
