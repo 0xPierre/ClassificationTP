@@ -15,7 +15,16 @@ Dataset* Dataset_readFromFile(char* filename) {
 		return NULL;
 	}
 
-	int _ = fscanf(file, "%d %d %d", &dataset->instanceCount, &dataset->classCount, &dataset->featureCount);
+	dataset->classCount = 0;
+	dataset->featureCount = 0;
+	dataset->instanceCount = 0;
+
+	if (fscanf(file, "%d %d %d", &dataset->instanceCount, &dataset->classCount, &dataset->featureCount) != 3)
+	{
+		printf("Dataset file format error\n");
+		free(dataset);
+		return NULL;
+	}
 
 	dataset->instances = (Instance*)malloc(dataset->instanceCount * sizeof(Instance));
 
@@ -32,6 +41,78 @@ Dataset* Dataset_readFromFile(char* filename) {
 	return dataset;
 }
 
+
+Subproblem* Subproblem_create(int maximumCapacity, int featureCount, int classCount) {
+	Subproblem* subproblem = (Subproblem*)calloc(1, sizeof(Subproblem));
+	if (subproblem == NULL) {
+		printf("Subproblem Memory allocation failed - subproblem\n");
+		return NULL;
+	}
+
+	subproblem->featureCount = featureCount;
+	subproblem->classCount = classCount;
+	subproblem->instanceCount = 0;
+	subproblem->capacity = maximumCapacity;
+
+	// Alloue le tableau de pointeurs d'instances à la capacité max
+	subproblem->instances = (Instance**)calloc(maximumCapacity, sizeof(Instance*));
+
+	if (subproblem->instances == NULL) {
+		printf("Subproblem Memory allocation failed - instances\n");
+		return NULL;
+	}
+
+	// Alloue le tableau de pointeurs de sous class
+	subproblem->classes = (SubproblemClass*)calloc(classCount, sizeof(SubproblemClass));
+
+	if (subproblem->instances == NULL || subproblem->classes == NULL) {
+		printf("Subproblem Memory allocation failed - classes\n");
+		return NULL;
+	}
+
+	// Alloue les instances pour chaque classes
+	for (int i = 0; i < classCount; i++)
+	{
+		subproblem->classes[i].instances = (Instance**)calloc(maximumCapacity, sizeof(Instance*));
+		if (subproblem->classes[i].instances == NULL) {
+			printf("Subproblem Memory allocation failed - instances class\n");
+			return NULL;
+		}
+	}
+
+	return subproblem;
+}
+
+
+void Subproblem_insert(Subproblem* subproblem, Instance* instance)
+{
+	// Insère l'adresse de l'instance dans le tableau principal
+	subproblem->instances[subproblem->instanceCount] = instance;
+
+	// Insère l'adresse de l'instance dans le tableau dédié à sa classe
+	int classId = instance->classID;
+
+	subproblem->classes[classId].instances[
+		subproblem->classes[classId].instanceCount
+	] = instance;
+	subproblem->classes[classId].instanceCount++;
+
+	// Incrémente le nombre d'instances
+	subproblem->instanceCount++;
+}
+
+
+void Subproblem_destroy(Subproblem* subproblem) {
+	for (int i = 0; i < subproblem->classCount; i++) {
+		free(subproblem->classes[i].instances);
+	}
+	
+	free(subproblem->classes);
+	free(subproblem->instances);
+	free(subproblem);
+}
+
+
 void Dataset_destroy(Dataset* dataset) {
 	for (int i = 0; i < dataset->instanceCount; i++) {
 		free(dataset->instances[i].values);
@@ -40,63 +121,32 @@ void Dataset_destroy(Dataset* dataset) {
 	free(dataset);
 }
 
+
 Subproblem* Dataset_getSubproblem(Dataset* data) {
-	Subproblem *subproblem = (Subproblem*)calloc(1, sizeof(Subproblem));
-
-	if (subproblem == NULL) {
-		printf("Subproblem Memory allocation failed\n");
+	if (data == NULL) {
+		printf("Dataset is NULL\n");
 		return NULL;
 	}
 
-	subproblem->instanceCount = data->instanceCount;
-	subproblem->featureCount = data->featureCount;
-	subproblem->classCount = data->classCount;
-	subproblem->capacity = data->instanceCount;
-	
-	subproblem->instances = (Instance **)calloc(subproblem->instanceCount, sizeof(Instance*));
+	// Création du sous problème
+	Subproblem* subproblem = Subproblem_create(
+		data->instanceCount, data->featureCount, data->classCount
+	);
 
-	for (int i = 0; i < subproblem->instanceCount; i++) {
-		subproblem->instances[i] = &data->instances[i];
+	// Ajout des instances dans le sous problème
+	for (int i = 0; i < data->instanceCount; i++) {
+		Subproblem_insert(subproblem, &data->instances[i]);
 	}
-
-	subproblem->classes = (SubproblemClass*)calloc(subproblem->classCount, sizeof(SubproblemClass));
-
-	// not finished
 
 	return subproblem;
 }
 
-
-Subproblem* Subproblem_create(int maximumCapacity, int featureCount, int classCount) {
-	Subproblem* subproblem = (Subproblem*)calloc(1, sizeof(Subproblem));
-	if (subproblem == NULL) {
-		printf("Subproblem Memory allocation failed\n");
-		return NULL;
-	}
-
-	subproblem->featureCount = featureCount;
-	subproblem->classCount = classCount;
-
-	// not finished
-
-	return subproblem;
-}
-
-void Subproblem_destroy(Subproblem* subproblem) {
-	for (int i = 0; i < subproblem->instanceCount; i++) {
-		free(subproblem->instances[i]);
-	}
-	free(subproblem->instances);
-	free(subproblem);
-
-	// not finished
-}
 
 void Subproblem_print(Subproblem* subproblem) {
 	printf("Dataset with %d classes of %d features\n", subproblem->classCount, subproblem->featureCount);
 	printf("Size = %d, capacity = %d\n", subproblem->instanceCount, subproblem->capacity);
 
 	for (int i = 0; i < subproblem->classCount; i++) {
-		printf("- class %d: %d instances\n", i, subproblem->classes[0].instanceCount);
+		printf("- class %d: %d instances\n", i, subproblem->classes[i].instanceCount);
 	}
 }

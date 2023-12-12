@@ -20,4 +20,4 @@ typedef struct sSubproblem {
 	int featureCount;
 	int classCount;
 	SubproblemClass* classes;
-} Subproblem;Dataset* Dataset_readFromFile(char* filename);void Dataset_destroy(Dataset* data);Subproblem* Dataset_getSubproblem(Dataset* data);Subproblem* Subproblem_create(int maximumCapacity, int featureCount, int classCount);void Subproblem_destroy(Subproblem* subproblem);void Subproblem_print(Subproblem* subproblem);
+} Subproblem;Dataset* Dataset_readFromFile(char* filename);void Dataset_destroy(Dataset* data);Subproblem* Dataset_getSubproblem(Dataset* data);Subproblem* Subproblem_create(int maximumCapacity, int featureCount, int classCount);void Subproblem_insert(Subproblem* subproblem, Instance* instance);void Subproblem_destroy(Subproblem* subproblem);void Subproblem_print(Subproblem* subproblem);
