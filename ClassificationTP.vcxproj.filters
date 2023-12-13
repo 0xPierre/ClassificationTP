@@ -27,6 +27,9 @@
     <ClCompile Include="Split.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="DecisionTree.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Settings.h">

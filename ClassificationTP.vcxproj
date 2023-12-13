@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Dataset.c" />
+    <ClCompile Include="DecisionTree.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="Dataset.h" />
     <ClCompile Include="Split.c" />
