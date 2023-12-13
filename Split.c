@@ -74,7 +74,7 @@ float Split_gini(Subproblem* sp, int featureID, float threshold) {
 Split Split_compute(Subproblem* subproblem) {
 	// Valeur max
 	float bestGini = FLT_MAX;
-	Split bestSplit;
+	Split bestSplit = { .featureID = -1, .threshold = 0.0 };
 	
 	// On itère sur toutes les features/threshold
 	for (int featureId = 0; featureId < subproblem->featureCount; featureId++) {
@@ -92,5 +92,6 @@ Split Split_compute(Subproblem* subproblem) {
 		}
 	}
 	printf("%f\n", bestGini);
+
 	return bestSplit;
 }

@@ -17,3 +17,7 @@ DecisionTreeNode* DecisionTree_create(
 void DecisionTree_destroy(DecisionTreeNode* decisionTree);
 
 int Decision_nodeCount(DecisionTreeNode* node);
+
+int DecisionTree_predict(DecisionTreeNode* tree, Instance* instance);
+
+float DecisionTree_evaluate(DecisionTreeNode* tree, Dataset* dataset);

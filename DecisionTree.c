@@ -86,3 +86,34 @@ int Decision_nodeCount(DecisionTreeNode* decisionTree)
 	}
 	return 1 + Decision_nodeCount(decisionTree->left) + Decision_nodeCount(decisionTree->right);
 }
+
+int DecisionTree_predict(DecisionTreeNode* decisionTree, Instance* instance)
+{
+	// Si on est sur une feuille
+	if (decisionTree->left == NULL && decisionTree->right == NULL) {
+		return decisionTree->classID;
+	}
+
+	// Sinon on continue la descente en fonction du seuil
+	if (instance->values[decisionTree->split.featureID] <= decisionTree->split.threshold) {
+		return DecisionTree_predict(decisionTree->left, instance);
+	}
+	else {
+		return DecisionTree_predict(decisionTree->right, instance);
+	}
+}
+
+float DecisionTree_evaluate(DecisionTreeNode* decisionTree, Dataset* dataset)
+{
+	int correctEvaluation = 0;
+
+	for (int i = 0; i < dataset->instanceCount; i++) {
+		Instance instance = dataset->instances[i];
+		int predictedClassId = DecisionTree_predict(decisionTree, &instance);
+		if (predictedClassId == instance.classID) {
+			correctEvaluation++;
+		}
+	}
+
+	return (float)correctEvaluation / (float)dataset->instanceCount;
+}
