@@ -106,7 +106,7 @@ int DecisionTree_predict(DecisionTreeNode* decisionTree, Instance* instance)
 float DecisionTree_evaluate(DecisionTreeNode* decisionTree, Dataset* dataset)
 {
 	int correctEvaluation = 0;
-
+	// Itère sur toutes les instances du dataset pour calculer le taux de réussite
 	for (int i = 0; i < dataset->instanceCount; i++) {
 		Instance instance = dataset->instances[i];
 		int predictedClassId = DecisionTree_predict(decisionTree, &instance);

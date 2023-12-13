@@ -1,9 +1,9 @@
 #include "Settings.h"
 
 
-int main(int argc, char** argv)
+void test_split_compute()
 {
-    /*Dataset* trainData = Dataset_readFromFile("Datasets/PENDIGITS_train.txt");
+    Dataset* trainData = Dataset_readFromFile("Datasets/PENDIGITS_train.txt");
 
     Subproblem* subproblem = Dataset_getSubproblem(trainData);
     Subproblem_print(subproblem);
@@ -16,10 +16,11 @@ int main(int argc, char** argv)
     Subproblem_destroy(subproblem);
     Dataset_destroy(trainData);
     printf("Process ended successfully\n");
+}
 
-    return 0;*/
-
-    /*char path[128] = "Datasets/PENDIGITS_train.txt";
+void test_node_tree_count()
+{
+    char path[128] = "Datasets/PENDIGITS_train.txt";
 
     Dataset* trainData = Dataset_readFromFile(path);
     Subproblem* sp = Dataset_getSubproblem(trainData);
@@ -32,9 +33,11 @@ int main(int argc, char** argv)
     Dataset_destroy(trainData);
 
     printf("Process ended successfully\n");
+}
 
-    return 0;*/
 
+void test_train_test_evaluation()
+{
     char pathTrain[128] = "Datasets/PENDIGITS_train.txt";
     printf("Read train dataset\n");
     Dataset* trainData = Dataset_readFromFile(pathTrain);
@@ -55,7 +58,48 @@ int main(int argc, char** argv)
     DecisionTree_destroy(tree);
     Dataset_destroy(trainData);
     Dataset_destroy(testData);
+
     printf("Process ended successfully\n");
+}
+
+void test_Dataset_bagging()
+{
+    char path[128] = "Datasets/PENDIGITS_train.txt";
+	Dataset* trainData = Dataset_readFromFile(path);
+
+    Subproblem* bag = Dataset_bagging(trainData, 0.7f);
+    printf("%d instances in the bag\n", bag->instanceCount);
+
+
+	printf("Process ended successfully\n");
+}
+
+void test_random_forest()
+{
+    char pathTrain[128] = "Datasets/PENDIGITS_train.txt";
+    printf("Read train dataset\n");
+    Dataset* trainData = Dataset_readFromFile(pathTrain);
+    printf("Read test dataset\n");
+    char pathTest[128] = "Datasets/PENDIGITS_test.txt";
+    Dataset* testData = Dataset_readFromFile(pathTest);
+    printf("Get subproblem\n");
+    Subproblem* sp = Dataset_getSubproblem(trainData);
+    printf("Create random forest\n");
+    RandomForest* rf = RandomForest_create(1, trainData, 30, 0.5f, 1.0f);
+    printf("Evaluate train\n");
+    float scoreTrain = RandomForest_evaluate(rf, trainData);
+    printf("Evaluate test\n");
+    float scoreTest = RandomForest_evaluate(rf, testData);
+    printf("train = %.3f, test = %.3f\n", scoreTrain, scoreTest);
+}
+
+int main(int argc, char** argv)
+{
+    //test_split_compute();
+    //test_node_tree_count();
+    //test_train_test_evaluation();
+    //test_Dataset_bagging();
+    test_random_forest();
 
     return 0;
 }

@@ -91,7 +91,7 @@ Split Split_compute(Subproblem* subproblem) {
 			}
 		}
 	}
-	printf("%f\n", bestGini);
+	//printf("%f\n", bestGini);
 
 	return bestSplit;
 }

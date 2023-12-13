@@ -131,10 +131,12 @@
     <ClCompile Include="DecisionTree.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="Dataset.h" />
+    <ClCompile Include="RandomForest.c" />
     <ClCompile Include="Split.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DecisionTree.h" />
+    <ClInclude Include="RandomForest.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="Split.h" />
   </ItemGroup>
