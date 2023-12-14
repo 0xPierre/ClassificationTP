@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 Dataset *Dataset_readFromFile(char *filename) {
     FILE *file = fopen(filename, "r");
@@ -53,26 +54,63 @@ Subproblem *Dataset_getSubproblem(Dataset *data) {
         return NULL;
     }
     Subproblem *subproblem = (Subproblem *) malloc(sizeof(Subproblem));
+    if (subproblem == NULL) {
+        fprintf(stderr, "ERROR: Memory allocation failed for Subproblem...\n");
+        return NULL;
+    }
 
     subproblem->instanceCount = data->instanceCount;
     subproblem->featureCount = data->featureCount;
     subproblem->classCount = data->classCount;
+    subproblem->capacity = data->instanceCount; // Set capacity to the initial instance count
 
     subproblem->instances = (Instance **) malloc(data->instanceCount * sizeof(Instance *));
 
+    // Some tmp vars for counting instant for each class and store instances
+    int classCount[data->classCount];
+    memset(classCount, 0, data->classCount * sizeof(int));
+
+    int classIDMemory, classCountIndex = -1;
+
     for (int i = 0; i < data->instanceCount; i++) {
         subproblem->instances[i] = &data->instances[i];
+
+        // The lines below are computed the number of instant for each class
+        if (classIDMemory != data->instances[i].classID) {
+            classCountIndex ++;
+        }
+        classCount[classCountIndex] ++;
+        classIDMemory = data->instances[i].classID;
     }
 
-    subproblem->capacity = data->instanceCount; // Set capacity to the initial instance count
-    subproblem->featureCount = data->featureCount;
-    subproblem->classCount = data->classCount;
-
-    subproblem->classes = (SubproblemClass *) malloc(data->classCount * sizeof(SubproblemClass));
+    subproblem->classes = (SubproblemClass *) calloc(data->classCount, sizeof(SubproblemClass));
+    if (subproblem->classes == NULL) {
+        fprintf(stderr, "ERROR: Memory allocation failed for Subproblem classes...\n");
+        Subproblem_destroy(subproblem);
+        return NULL;
+    }
 
     for (int i = 0; i < data->classCount; i++) {
-        subproblem->classes[i].instanceCount = 0;
+        subproblem->classes[i].instanceCount = classCount[i];
         subproblem->classes[i].instances = NULL;
+    }
+
+    for (int i = 0; i < data->classCount; i++) {
+        subproblem->classes[i].instanceCount = classCount[i];
+        subproblem->classes[i].instances = (Instance **)malloc(classCount[i] * sizeof(Instance *));
+        if (subproblem->classes[i].instances == NULL) {
+            fprintf(stderr, "ERROR: Memory allocation failed for Subproblem class instances...\n");
+            Subproblem_destroy(subproblem);
+            return NULL;
+        }
+
+        // Fill in instances for each class
+        int instanceIndex = 0;
+        for (int j = 0; j < data->instanceCount; j++) {
+            if (data->instances[j].classID == i) {
+                subproblem->classes[i].instances[instanceIndex++] = &data->instances[j];
+            }
+        }
     }
 
     return subproblem;
