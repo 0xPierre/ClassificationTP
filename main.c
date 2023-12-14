@@ -70,7 +70,8 @@ void test_Dataset_bagging()
     Subproblem* bag = Dataset_bagging(trainData, 0.7f);
     printf("%d instances in the bag\n", bag->instanceCount);
 
-
+    Subproblem_destroy(bag);
+    Dataset_destroy(trainData);
 	printf("Process ended successfully\n");
 }
 
@@ -93,13 +94,39 @@ void test_random_forest()
     printf("train = %.3f, test = %.3f\n", scoreTrain, scoreTest);
 }
 
+void test_memory()
+{
+    char pathTrain[128] = "Datasets/PENDIGITS_train.txt";
+    printf("Read train dataset\n");
+    Dataset* trainData = Dataset_readFromFile(pathTrain);
+    char pathTest[128] = "Datasets/PENDIGITS_test.txt";
+    printf("Read test dataset\n");
+    Dataset* testData = Dataset_readFromFile(pathTest);
+    printf("Get train subproblem\n");
+    Subproblem* sp = Dataset_getSubproblem(trainData);
+    printf("Create decision tree\n");
+    DecisionTreeNode* tree = DecisionTree_create(sp, 0, 30, .11f);
+    printf("Generation d'un arbre de %d noeuds\n", Decision_nodeCount(tree));
+    printf("Evaluation of the tree with train\n");
+    float scoreTrain = DecisionTree_evaluate(tree, trainData);
+    printf("Evaluation of the tree with test\n");
+    float scoreTest = DecisionTree_evaluate(tree, testData);
+    printf("train = %.3f, test = %.3f\n", scoreTrain, scoreTest);
+
+    Subproblem_destroy(sp);
+    DecisionTree_destroy(tree);
+    Dataset_destroy(trainData);
+    Dataset_destroy(testData);
+}
+
 int main(int argc, char** argv)
 {
     //test_split_compute();
     //test_node_tree_count();
     //test_train_test_evaluation();
     //test_Dataset_bagging();
-    test_random_forest();
+    //test_random_forest();
+    test_memory();
 
     return 0;
 }

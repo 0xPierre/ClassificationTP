@@ -118,6 +118,7 @@ void Dataset_destroy(Dataset* dataset) {
 		free(dataset->instances[i].values);
 	}
 	free(dataset->instances);
+	printf("free bg\n");
 	free(dataset);
 }
 
