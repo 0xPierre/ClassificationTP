@@ -23,11 +23,12 @@ Dataset *Dataset_readFromFile(char *filename) {
            &dataset->featureCount);
 
     dataset->instances = calloc(dataset->instanceCount, sizeof(Instance));
+
     for (int i = 0; i < dataset->instanceCount; i++) {
         dataset->instances[i].values = (int *) calloc(dataset->featureCount, sizeof(int));
-        dataset->instances[i].classID = i;
+        fscanf(file, "%d", &dataset->instances[i].classID); // Get class ID
         for (int y = 0; y < dataset->featureCount; y++) {
-            fscanf(file, "%d", &dataset->instances[i].values[y]);
+            fscanf(file, "%d", &dataset->instances[i].values[y]); // Get features
         }
     }
 
@@ -105,8 +106,7 @@ void Subproblem_destroy(Subproblem *subproblem) {
 
     // Deallocate memory for instances in each class array
     for (int i = 0; i < subproblem->classCount; i++) {
-        SubproblemClass *classArray = &(subproblem->classes[i]);
-        free(classArray->instances);
+        free(subproblem->classes[i].instances);
     }
 
     // Deallocate memory for the array of SubproblemClass structures
