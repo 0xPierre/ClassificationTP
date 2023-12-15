@@ -46,7 +46,7 @@ float Split_gini(Subproblem* sp, int featureID, float threshold) {
 	for (int i = 0; i < instanceCount; i++) {
 		Instance* instance = sp->instances[i];
 
-		if (instance->values[featureID] <= threshold) {
+		if (instance->values[featureID] < threshold) {
 			Subproblem_insert(leftSubproblem, instance);
 		}
 		else {
@@ -76,22 +76,34 @@ Split Split_compute(Subproblem* subproblem) {
 	float bestGini = FLT_MAX;
 	Split bestSplit;
 	
-	// On itère sur toutes les features/threshold
+	// On itère sur toutes les features
 	for (int featureId = 0; featureId < subproblem->featureCount; featureId++) {
-		for (int i = 0; i < subproblem->instanceCount; i++) {
-			float threshold = subproblem->instances[i]->values[featureId];
+		// On cherche minj et maxj
+		int minj = subproblem->instances[0]->values[featureId];
+		int maxj = subproblem->instances[0]->values[featureId];
 
-			// Calcul le meilleur gini
-			float gini = Split_gini(subproblem, featureId, threshold);
+		// Comme minj et maxj ont déjà la valeur de la première instance, i=1
+		for (int i = 1; i < subproblem->instanceCount; i++) {
+			int tmpFeature = subproblem->instances[i]->values[featureId];
+			if (tmpFeature > maxj)
+				maxj = tmpFeature;
 
-			if (gini <= bestGini) {
-				bestGini = gini;
-				bestSplit.featureID = featureId;
-				bestSplit.threshold = threshold;
+			if (tmpFeature < minj) {
+				minj = tmpFeature;
 			}
 		}
+
+		float threshold = ((float)maxj + (float)minj) / 2;
+
+		// Calcul le meilleur gini
+		float gini = Split_gini(subproblem, featureId, threshold);
+
+		if (gini < bestGini) {
+			bestGini = gini;
+			bestSplit.featureID = featureId;
+			bestSplit.threshold = threshold;
+		}
 	}
-	//printf("%f\n", bestGini);
 
 	return bestSplit;
 }

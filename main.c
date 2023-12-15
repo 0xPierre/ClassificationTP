@@ -119,14 +119,32 @@ void test_memory()
     Dataset_destroy(testData);
 }
 
+
+void vpl_test(char pathTrain[128], char pathTest[128])
+{
+    //Dataset* trainData = Dataset_readFromFile(pathTrain);
+    //char pathTest[128] = "Datasets/PENDIGITS_test.txt";
+    //Dataset* testData = Dataset_readFromFile(pathTest);
+    //Subproblem* sp = Dataset_getSubproblem(trainData);
+    //DecisionTreeNode* tree = DecisionTree_create(sp, 0, 30, 1.0);
+    //float scoreTrain = DecisionTree_evaluate(tree, trainData);
+    //printf("Evaluation of the tree with test\n");
+    //float scoreTest = DecisionTree_evaluate(tree, testData);
+    //printf("train = %.3f, test = %.3f\n", scoreTrain, scoreTest);
+    //Subproblem_destroy(sp);
+    //DecisionTree_destroy(tree);
+    //Dataset_destroy(trainData);
+    //Dataset_destroy(testData);
+}
+
 int main(int argc, char** argv)
 {
     //test_split_compute();
     //test_node_tree_count();
-    //test_train_test_evaluation();
+    test_train_test_evaluation();
     //test_Dataset_bagging();
     //test_random_forest();
-    test_memory();
+    //test_memory();
 
     return 0;
 }

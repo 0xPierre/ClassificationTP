@@ -31,7 +31,6 @@ DecisionTreeNode* DecisionTree_create(Subproblem* sp, int currentDepth, int maxD
 	}
 
 	float purity = (float)majority_class_count / (float)sp->instanceCount;
-	printf("Purity: %f %d\n", purity, currentDepth);
 
 	// Si la purete est supérieut à prunningThreshold
 	if (purity >= prunningThreshold) {
@@ -41,9 +40,7 @@ DecisionTreeNode* DecisionTree_create(Subproblem* sp, int currentDepth, int maxD
 
 	// La purete est inférieure à prunningThreshold
 	// On calcule le split
-	printf("split\n");
 	node->split = Split_compute(sp);
-	printf("split done\n");
 
 	// On crée les sous-problèmes
 	Subproblem* leftSubproblem = Subproblem_create(sp->instanceCount, sp->featureCount, sp->classCount);
