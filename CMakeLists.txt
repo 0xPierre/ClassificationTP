@@ -10,3 +10,5 @@ add_executable(ClassificationTP src/main.c
         include/Split.h
         src/DecisionTree.c
         include/DecisionTree.h)
+
+target_link_libraries(ClassificationTP m)
