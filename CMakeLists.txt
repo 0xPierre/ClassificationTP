@@ -3,6 +3,10 @@ project(ClassificationTP C)
 
 set(CMAKE_C_STANDARD 23)
 
-add_executable(ClassificationTP main.c
-        Dataset.c
-        Dataset.h)
+add_executable(ClassificationTP src/main.c
+        src/Dataset.c
+        include/Dataset.h
+        src/Split.c
+        include/Split.h
+        src/DecisionTree.c
+        include/DecisionTree.h)
