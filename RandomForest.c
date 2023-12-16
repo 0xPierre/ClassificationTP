@@ -42,6 +42,8 @@ RandomForest* RandomForest_create(
 		printf("Creating tree %d\n", i);
 		Subproblem* subproblem = Dataset_bagging(data, baggingProportion);
 		randomForest->trees[i] = DecisionTree_create(subproblem, 0, maxDepth, prunningThreshold);
+		// On supprime le subproblem généré au dessus
+		Subproblem_destroy(subproblem);
 		randomForest->treeCount++;
 	}
 

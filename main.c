@@ -86,7 +86,7 @@ void test_random_forest()
     printf("Get subproblem\n");
     Subproblem* sp = Dataset_getSubproblem(trainData);
     printf("Create random forest\n");
-    RandomForest* rf = RandomForest_create(20, trainData, 30, 0.5f, 1.0f);
+    RandomForest* rf = RandomForest_create(30, trainData, 30, 0.5f, 1.0f);
     printf("Evaluate train\n");
     float scoreTrain = RandomForest_evaluate(rf, trainData);
     printf("Evaluate test\n");
@@ -148,8 +148,8 @@ int main(int argc, char** argv)
     //test_node_tree_count();
     //test_train_test_evaluation();
     //test_Dataset_bagging();
-    test_random_forest();
-    //test_memory();
+    //test_random_forest();
+    test_memory();
 
     return 0;
 }
