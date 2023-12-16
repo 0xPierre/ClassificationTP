@@ -31,3 +31,15 @@ float Split_gini(Subproblem *sp, int featureID, float threshold);
  * @return      The Gini impurity score.
  */
 float Get_gini_score(Subproblem * sp);
+
+/**
+ * @brief Computes the best split for a given subproblem using Gini impurity.
+ *
+ * This function iterates through each feature in the subproblem and finds the best
+ * split based on Gini impurity. The best split is determined by minimizing the Gini
+ * impurity across all features and their corresponding thresholds.
+ *
+ * @param subproblem The subproblem for which the split is computed.
+ * @return The best split found, including the feature ID and threshold.
+ */
+Split Split_compute(Subproblem *subproblem);

@@ -51,3 +51,35 @@ float Get_gini_score(Subproblem *sp) {
 
     return 1.0f - score;
 }
+
+Split Split_compute(Subproblem *subproblem) {
+    float bestGini = INFINITY;
+    Split split;
+
+    for (int i = 0; i < subproblem->featureCount; ++i) {
+        int min = INFINITY;
+        int max = 0;
+
+        for (int j = 0; j < subproblem->instanceCount; ++j) {
+            int feature = subproblem->instances[j]->values[i];
+            if (feature > max) {
+                max = feature;
+            }
+            if (feature < min) {
+                min = feature;
+            }
+        }
+
+        float threshold = (float )min + (float)max / 2;
+
+        float gini = Split_gini(subproblem, i, threshold);
+
+        if (gini < bestGini) {
+            bestGini = gini;
+            split.threshold = threshold;
+            split.featureID = i;
+        }
+    }
+
+    return split;
+}
