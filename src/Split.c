@@ -46,7 +46,7 @@ float Get_gini_score(Subproblem *sp) {
     float score = .0f;
 
     for (int i = 0; i < sp->classCount; ++i) {
-        score += (float) pow((float )sp->classes[i].instanceCount / (float)sp->instanceCount, 2);
+        score += (float) pow((float) sp->classes[i].instanceCount / (float) sp->instanceCount, 2);
     }
 
     return 1.0f - score;
@@ -57,7 +57,7 @@ Split Split_compute(Subproblem *subproblem) {
     Split split;
 
     for (int i = 0; i < subproblem->featureCount; ++i) {
-        int min = INFINITY;
+        int min = (int) INFINITY;
         int max = 0;
 
         for (int j = 0; j < subproblem->instanceCount; ++j) {
@@ -70,7 +70,7 @@ Split Split_compute(Subproblem *subproblem) {
             }
         }
 
-        float threshold = (float )min + (float)max / 2;
+        float threshold = ((float) min + (float) max) / 2;
 
         float gini = Split_gini(subproblem, i, threshold);
 
