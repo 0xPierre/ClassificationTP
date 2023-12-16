@@ -119,18 +119,13 @@ Subproblem *Dataset_getSubproblem(Dataset *data) {
 Subproblem *Subproblem_create(int maximumCapacity, int featureCount, int classCount) {
     Subproblem *subproblem = (Subproblem *) malloc(sizeof(Subproblem));
 
-    subproblem->instances = (Instance **) malloc(maximumCapacity * sizeof(Instance *));
     subproblem->instanceCount = 0;
     subproblem->capacity = maximumCapacity;
     subproblem->featureCount = featureCount;
     subproblem->classCount = classCount;
 
-    subproblem->classes = (SubproblemClass *) malloc(classCount * sizeof(SubproblemClass));
-
-    for (int i = 0; i < classCount; i++) {
-        subproblem->classes[i].instanceCount = 0;
-        subproblem->classes[i].instances = NULL;
-    }
+    subproblem->instances = (Instance **) calloc(maximumCapacity, sizeof(Instance *));
+    subproblem->classes = (SubproblemClass *) calloc(classCount, sizeof(SubproblemClass));
 
     return subproblem;
 }
