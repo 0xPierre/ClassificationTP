@@ -142,6 +142,31 @@ void vpl_test(char pathTrain[128], char pathTest[128])
     //Dataset_destroy(testData);
 }
 
+void test_dump_forest()
+{
+    char pathTrain[128] = "Datasets/MNIST_train.txt";
+    printf("Read train dataset\n");
+    Dataset* trainData = Dataset_readFromFile(pathTrain);
+    printf("Get subproblem\n");
+    Subproblem* sp = Dataset_getSubproblem(trainData);
+    printf("Create random forest\n");
+    RandomForest* rf = RandomForest_create(5, trainData, 30, 0.5f, 1.0f);
+
+
+    ForestFileDump(rf, "Forests/MNIST.dfm");
+    RandomForest* rf2 = LoadForestFromFile("Forests/MNIST.dfm");
+
+    float scoreTrain = RandomForest_evaluate(rf, trainData);
+    printf("Score train : %f\n", scoreTrain);
+    float score2Train = RandomForest_evaluate(rf2, trainData);
+    printf("Score train imported : %f\n", scoreTrain);
+
+    RandomForest_destroy(rf);
+    RandomForest_destroy(rf2);
+    Dataset_destroy(trainData);
+    Subproblem_destroy(sp);
+}
+
 int main(int argc, char** argv)
 {
     //test_split_compute();
@@ -149,7 +174,8 @@ int main(int argc, char** argv)
     //test_train_test_evaluation();
     //test_Dataset_bagging();
     //test_random_forest();
-    test_memory();
+    /*test_memory();*/
+    test_dump_forest();
 
     return 0;
 }

@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClCompile Include="Dataset.c" />
     <ClCompile Include="DecisionTree.c" />
+    <ClCompile Include="ForestFileHandler.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="Dataset.h" />
     <ClCompile Include="RandomForest.c" />
@@ -136,6 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DecisionTree.h" />
+    <ClInclude Include="ForestFileHandler.h" />
     <ClInclude Include="RandomForest.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="Split.h" />
