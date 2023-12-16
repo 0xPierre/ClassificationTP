@@ -104,6 +104,5 @@ Split Split_compute(Subproblem* subproblem) {
 			bestSplit.threshold = threshold;
 		}
 	}
-
 	return bestSplit;
 }

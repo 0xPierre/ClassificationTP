@@ -54,7 +54,7 @@ DecisionTreeNode* DecisionTree_create(Subproblem* sp, int currentDepth, int maxD
 	// Division des instances en fonction du seuil
 	for (int i = 0; i < sp->instanceCount; i++) {
 		Instance* instance = sp->instances[i];
-		if (instance->values[node->split.featureID] <= node->split.threshold) {
+		if (instance->values[node->split.featureID] < node->split.threshold) {
 			Subproblem_insert(leftSubproblem, instance);
 		}
 		else {
@@ -99,7 +99,7 @@ int DecisionTree_predict(DecisionTreeNode* decisionTree, Instance* instance)
 	}
 
 	// Sinon on continue la descente en fonction du seuil
-	if (instance->values[decisionTree->split.featureID] <= decisionTree->split.threshold) {
+	if (instance->values[decisionTree->split.featureID] < decisionTree->split.threshold) {
 		return DecisionTree_predict(decisionTree->left, instance);
 	}
 	else {

@@ -32,6 +32,7 @@ RandomForest* RandomForest_create(
 
 	// Alloue le tableau de pointeurs d'arbres
 	randomForest->trees = (DecisionTreeNode**)calloc(numberOfTrees, sizeof(DecisionTreeNode*));
+	randomForest->classCount = data->classCount;
 	if (randomForest->trees == NULL) {
 		printf("RandomForest Memory allocation failed - trees\n");
 		return NULL;
@@ -41,6 +42,7 @@ RandomForest* RandomForest_create(
 		printf("Creating tree %d\n", i);
 		Subproblem* subproblem = Dataset_bagging(data, baggingProportion);
 		randomForest->trees[i] = DecisionTree_create(subproblem, 0, maxDepth, prunningThreshold);
+		randomForest->treeCount++;
 	}
 
 	return randomForest;
@@ -54,7 +56,6 @@ int RandomForest_predict(RandomForest* rf, Instance* instance)
 		printf("RandomForest Memory allocation failed - votes\n");
 		return -1;
 	}
-
 	// Prédiction pour chacun des arbres
 	for (int i = 0; i < rf->treeCount; i++) {
 		// La prédiction renvoie la class
@@ -87,8 +88,6 @@ float RandomForest_evaluate(RandomForest* rf, Dataset* data)
 		if (prediction == data->instances[i].classID)
 			correctCount++;
 	}
-	printf("Correct count : %d\n", correctCount);
-	printf("Instance count : %d\n", data->instanceCount);
 	return (float)correctCount / (float)data->instanceCount;
 }
 
@@ -107,6 +106,7 @@ void RandomForest_destroy(RandomForest* rf)
 	for (int i = 0; i < rf->treeCount; i++) {
 		DecisionTree_destroy(rf->trees[i]);
 	}
+	free(rf->trees);
 
 	free(rf);
 }
