@@ -12,6 +12,7 @@
 #include "DecisionTree.h"
 #include "RandomForest.h"
 #include "ForestFileHandler.h"
+#include "Tests.h"
 
 
 #define AssertNew(ptr) { if (ptr == NULL) { assert(false); abort(); } }
