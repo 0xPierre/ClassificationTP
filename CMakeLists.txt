@@ -9,6 +9,8 @@ add_executable(ClassificationTP src/main.c
         src/Split.c
         include/Split.h
         src/DecisionTree.c
-        include/DecisionTree.h)
+        include/DecisionTree.h
+        src/RandomForest.c
+        include/RandomForest.h)
 
 target_link_libraries(ClassificationTP m)
