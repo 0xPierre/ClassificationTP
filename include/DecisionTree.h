@@ -64,3 +64,29 @@ void DecisionTree_destroy(DecisionTreeNode *decisionTree);
  * @return      The total number of nodes in the decision tree.
  */
 int Decision_nodeCount(DecisionTreeNode* node);
+
+/**
+ * @brief Predict the class label for a given instance using a decision tree.
+ *
+ * This function traverses the decision tree based on the feature values of the input
+ * instance and predicts the class label by reaching a leaf node in the tree.
+ *
+ * @param tree A pointer to the root node of the decision tree.
+ * @param instance A pointer to the instance for which the class label is to be predicted.
+ * @return The predicted class label for the given instance.
+ */
+int DecisionTree_predict(DecisionTreeNode *tree, Instance* instance);
+
+/**
+ * @brief Evaluate the accuracy of a decision tree on a dataset.
+ *
+ * This function takes a decision tree and a dataset as input and evaluates the accuracy
+ * of the decision tree on the given dataset by comparing the predicted class labels
+ * with the actual class labels in the dataset.
+ *
+ * @param tree A pointer to the root node of the decision tree.
+ * @param dataset A pointer to the dataset containing instances for evaluation.
+ * @return The accuracy of the decision tree on the dataset, represented as a floating-point
+ *         value between 0.0 and 1.0 (0% to 100% accuracy).
+ */
+float DecisionTree_evaluate(DecisionTreeNode *tree, Dataset *dataset);

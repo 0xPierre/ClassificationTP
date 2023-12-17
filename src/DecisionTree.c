@@ -70,9 +70,37 @@ void DecisionTree_destroy(DecisionTreeNode *decisionTree) {
     free(decisionTree);
 }
 
-int Decision_nodeCount(DecisionTreeNode* node) {
+int Decision_nodeCount(DecisionTreeNode *node) {
     if (node == NULL) {
         return 0;
     }
     return 1 + Decision_nodeCount(node->left) + Decision_nodeCount(node->right);
+}
+
+int DecisionTree_predict(DecisionTreeNode *tree, Instance *instance) {
+
+    if (tree->right == NULL && tree->left == NULL) {
+        return tree->classID;
+    }
+
+    if ((float) instance->values[tree->split.featureID] < tree->split.threshold) {
+        return DecisionTree_predict(tree->left, instance);
+
+    } else {
+        return DecisionTree_predict(tree->right, instance);
+    }
+}
+
+float DecisionTree_evaluate(DecisionTreeNode *tree, Dataset *dataset) {
+    float succeededInstance = .0f;
+
+    for (int i = 0; i < dataset->instanceCount; ++i) {
+        int result = DecisionTree_predict(tree, &dataset->instances[i]);
+
+        if (result == dataset->instances[i].classID) {
+            succeededInstance++;
+        }
+    }
+
+    return succeededInstance / (float) dataset->instanceCount;
 }
