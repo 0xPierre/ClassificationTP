@@ -47,7 +47,7 @@ void test_train_test_evaluation()
     printf("Get train subproblem\n");
     Subproblem* sp = Dataset_getSubproblem(trainData);
     printf("Create decision tree\n");
-    DecisionTreeNode* tree = DecisionTree_create(sp, 0, 30, 1.0);
+    DecisionTreeNode* tree = DecisionTree_create(sp, 0, 30, 1.0f);
     printf("Generation d'un arbre de %d noeuds\n", Decision_nodeCount(tree));
     printf("Evaluation of the tree with train\n");
     float scoreTrain = DecisionTree_evaluate(tree, trainData);
@@ -171,11 +171,11 @@ int main(int argc, char** argv)
 {
     //test_split_compute();
     //test_node_tree_count();
-    //test_train_test_evaluation();
+    test_train_test_evaluation();
     //test_Dataset_bagging();
     //test_random_forest();
     /*test_memory();*/
-    test_dump_forest();
+    //test_dump_forest();
 
     return 0;
 }

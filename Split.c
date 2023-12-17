@@ -3,29 +3,12 @@
 
 
 float calculate_gini(Subproblem* subproblem) {
-    int classCount = subproblem->classCount;
-    int instanceCount = subproblem->instanceCount;
-
-    int* classCounts = (int*)calloc(classCount, sizeof(int));
-
-    if (classCounts == NULL) {
-		printf("Subproblem Memory allocation failed - classCounts\n");
-
-		return -1.0f;
-	}
-
-    // Compte le nombre d'instances de chaque classe
-    for (int i = 0; i < instanceCount; i++) {
-		classCounts[subproblem->instances[i]->classID]++;
-	}
-
     float gini = 1.0f;
 	// Calcule le gini
-    for (int i = 0; i < classCount; i++) {
-		float p = (float)classCounts[i] / (float)instanceCount;
+    for (int i = 0; i < subproblem->classCount; i++) {
+		float p = (float)subproblem->classes[i].instanceCount / (float)subproblem->instanceCount;
 		gini -= p * p;
 	}
-	free(classCounts);
 
 	return gini;
 }
@@ -46,7 +29,7 @@ float Split_gini(Subproblem* sp, int featureID, float threshold) {
 	for (int i = 0; i < instanceCount; i++) {
 		Instance* instance = sp->instances[i];
 
-		if (instance->values[featureID] < threshold) {
+		if (instance->values[featureID] <= threshold) {
 			Subproblem_insert(leftSubproblem, instance);
 		}
 		else {
@@ -88,7 +71,7 @@ Split Split_compute(Subproblem* subproblem) {
 			if (tmpFeature > maxj)
 				maxj = tmpFeature;
 
-			if (tmpFeature < minj) {
+			if (tmpFeature <= minj) {
 				minj = tmpFeature;
 			}
 		}
@@ -98,7 +81,7 @@ Split Split_compute(Subproblem* subproblem) {
 		// Calcul le meilleur gini
 		float gini = Split_gini(subproblem, featureId, threshold);
 
-		if (gini < bestGini) {
+		if (gini <= bestGini) {
 			bestGini = gini;
 			bestSplit.featureID = featureId;
 			bestSplit.threshold = threshold;
