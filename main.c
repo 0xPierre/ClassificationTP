@@ -144,7 +144,7 @@ void vpl_test(char pathTrain[128], char pathTest[128])
 
 void test_dump_forest()
 {
-    char pathTrain[128] = "Datasets/MNIST_train.txt";
+    char pathTrain[128] = "Datasets/PENDIGITS_train.txt";
     printf("Read train dataset\n");
     Dataset* trainData = Dataset_readFromFile(pathTrain);
     printf("Get subproblem\n");
@@ -153,8 +153,8 @@ void test_dump_forest()
     RandomForest* rf = RandomForest_create(5, trainData, 30, 0.5f, 1.0f);
 
 
-    ForestFileDump(rf, "Forests/MNIST.dfm");
-    RandomForest* rf2 = LoadForestFromFile("Forests/MNIST.dfm");
+    ForestFileDump(rf, "Forests/PENDIGITS.dfm");
+    RandomForest* rf2 = LoadForestFromFile("Forests/PENDIGITS.dfm");
 
     float scoreTrain = RandomForest_evaluate(rf, trainData);
     printf("Score train : %f\n", scoreTrain);
