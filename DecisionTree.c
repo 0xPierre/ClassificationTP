@@ -9,7 +9,7 @@ DecisionTreeNode* DecisionTree_create(Subproblem* sp, int currentDepth, int maxD
 {
 	// Si la profondeur est atteinte
 	if (currentDepth == maxDepth) {
-		printf("Max depth reached\n");
+//		printf("Max depth reached\n");
 		return NULL;
 	}
 
@@ -32,17 +32,17 @@ DecisionTreeNode* DecisionTree_create(Subproblem* sp, int currentDepth, int maxD
 
 	float purity = (float)majority_class_count / (float)sp->instanceCount;
 
-	// Si la purete est supérieut à prunningThreshold
+	// Si la purete est supï¿½rieut ï¿½ prunningThreshold
 	if (purity >= prunningThreshold) {
 		// On retourne un noeud avec la classe majoritaire
 		return node;
 	}
 
-	// La purete est inférieure à prunningThreshold
+	// La purete est infï¿½rieure ï¿½ prunningThreshold
 	// On calcule le split
 	node->split = Split_compute(sp);
 
-	// On crée les sous-problèmes
+	// On crï¿½e les sous-problï¿½mes
 	Subproblem* leftSubproblem = Subproblem_create(sp->instanceCount, sp->featureCount, sp->classCount);
 	Subproblem* rightSubproblem = Subproblem_create(sp->instanceCount, sp->featureCount, sp->classCount);
 
@@ -62,7 +62,7 @@ DecisionTreeNode* DecisionTree_create(Subproblem* sp, int currentDepth, int maxD
 		}
 	}
 
-	// On crée les noeuds fils
+	// On crï¿½e les noeuds fils
 	node->left = DecisionTree_create(leftSubproblem, currentDepth + 1, maxDepth, prunningThreshold);
 	node->right = DecisionTree_create(rightSubproblem, currentDepth + 1, maxDepth, prunningThreshold);
 
@@ -110,7 +110,7 @@ int DecisionTree_predict(DecisionTreeNode* decisionTree, Instance* instance)
 float DecisionTree_evaluate(DecisionTreeNode* decisionTree, Dataset* dataset)
 {
 	int correctEvaluation = 0;
-	// Itère sur toutes les instances du dataset pour calculer le taux de réussite
+	// Itï¿½re sur toutes les instances du dataset pour calculer le taux de rï¿½ussite
 	for (int i = 0; i < dataset->instanceCount; i++) {
 		Instance instance = dataset->instances[i];
 		int predictedClassId = DecisionTree_predict(decisionTree, &instance);
