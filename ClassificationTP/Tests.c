@@ -2,7 +2,7 @@
 
 void test_split_compute()
 {
-    Dataset* trainData = Dataset_readFromFile("Datasets/PENDIGITS_train.txt");
+    Dataset* trainData = Dataset_readFromFile("../Datasets/PENDIGITS_train.txt");
 
     Subproblem* subproblem = Dataset_getSubproblem(trainData);
     Subproblem_print(subproblem);

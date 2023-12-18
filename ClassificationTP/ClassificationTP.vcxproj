@@ -137,6 +137,7 @@
     <ClCompile Include="Dataset.c" />
     <ClCompile Include="DecisionTree.c" />
     <ClCompile Include="ForestFileHandler.c" />
+    <ClCompile Include="Interface.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="RandomForest.c" />
     <ClCompile Include="Split.c" />
@@ -149,6 +150,7 @@
     <ClInclude Include="Dataset.h" />
     <ClInclude Include="DecisionTree.h" />
     <ClInclude Include="ForestFileHandler.h" />
+    <ClInclude Include="Interface.h" />
     <ClInclude Include="RandomForest.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="Split.h" />
