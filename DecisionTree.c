@@ -54,7 +54,7 @@ DecisionTreeNode* DecisionTree_create(Subproblem* sp, int currentDepth, int maxD
 	// Division des instances en fonction du seuil
 	for (int i = 0; i < sp->instanceCount; i++) {
 		Instance* instance = sp->instances[i];
-		if (instance->values[node->split.featureID] <= node->split.threshold) {
+		if (instance->values[node->split.featureID] < node->split.threshold) {
 			Subproblem_insert(leftSubproblem, instance);
 		}
 		else {
@@ -66,6 +66,9 @@ DecisionTreeNode* DecisionTree_create(Subproblem* sp, int currentDepth, int maxD
 	node->left = DecisionTree_create(leftSubproblem, currentDepth + 1, maxDepth, prunningThreshold);
 	node->right = DecisionTree_create(rightSubproblem, currentDepth + 1, maxDepth, prunningThreshold);
 
+	Subproblem_destroy(leftSubproblem);
+	Subproblem_destroy(rightSubproblem);
+
 	return node;
 }
 
@@ -76,6 +79,7 @@ void DecisionTree_destroy(DecisionTreeNode* decisionTree)
 	}
 	DecisionTree_destroy(decisionTree->left);
 	DecisionTree_destroy(decisionTree->right);
+
 	free(decisionTree);
 }
 
@@ -95,7 +99,7 @@ int DecisionTree_predict(DecisionTreeNode* decisionTree, Instance* instance)
 	}
 
 	// Sinon on continue la descente en fonction du seuil
-	if (instance->values[decisionTree->split.featureID] <= decisionTree->split.threshold) {
+	if (instance->values[decisionTree->split.featureID] < decisionTree->split.threshold) {
 		return DecisionTree_predict(decisionTree->left, instance);
 	}
 	else {
@@ -106,7 +110,7 @@ int DecisionTree_predict(DecisionTreeNode* decisionTree, Instance* instance)
 float DecisionTree_evaluate(DecisionTreeNode* decisionTree, Dataset* dataset)
 {
 	int correctEvaluation = 0;
-
+	// Itère sur toutes les instances du dataset pour calculer le taux de réussite
 	for (int i = 0; i < dataset->instanceCount; i++) {
 		Instance instance = dataset->instances[i];
 		int predictedClassId = DecisionTree_predict(decisionTree, &instance);

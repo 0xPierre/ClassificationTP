@@ -129,14 +129,20 @@
   <ItemGroup>
     <ClCompile Include="Dataset.c" />
     <ClCompile Include="DecisionTree.c" />
+    <ClCompile Include="ForestFileHandler.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="Dataset.h" />
+    <ClCompile Include="RandomForest.c" />
     <ClCompile Include="Split.c" />
+    <ClCompile Include="Tests.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DecisionTree.h" />
+    <ClInclude Include="ForestFileHandler.h" />
+    <ClInclude Include="RandomForest.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="Split.h" />
+    <ClInclude Include="Tests.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
