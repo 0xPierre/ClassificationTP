@@ -5,4 +5,8 @@ set(CMAKE_C_STANDARD 23)
 
 add_executable(ClassificationTP main.c
         Split.c
-        DecisionTree.c)
+        DecisionTree.c
+        Dataset.c
+        ForestFileHandler.c
+        RandomForest.c
+        Tests.c)
