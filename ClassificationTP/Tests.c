@@ -2,7 +2,7 @@
 
 void test_split_compute()
 {
-    Dataset* trainData = Dataset_readFromFile("Datasets/PENDIGITS_train.txt");
+    Dataset* trainData = Dataset_readFromFile("../Datasets/PENDIGITS_train.txt");
 
     Subproblem* subproblem = Dataset_getSubproblem(trainData);
     Subproblem_print(subproblem);
@@ -37,10 +37,10 @@ void test_node_tree_count()
 
 void test_train_test_evaluation()
 {
-    char pathTrain[128] = "Datasets/PENDIGITS_train.txt";
+    char pathTrain[128] = "../Datasets/PENDIGITS_train.txt";
     printf("Read train dataset\n");
     Dataset* trainData = Dataset_readFromFile(pathTrain);
-    char pathTest[128] = "Datasets/PENDIGITS_test.txt";
+    char pathTest[128] = "../Datasets/PENDIGITS_test.txt";
     printf("Read test dataset\n");
     Dataset* testData = Dataset_readFromFile(pathTest);
     printf("Get train subproblem\n");
