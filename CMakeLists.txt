@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.27)
 project(ClassificationTP C)
 
 set(CMAKE_C_STANDARD 23)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fopenmp")
 file(COPY Datasets DESTINATION ${CMAKE_BINARY_DIR})
 
 add_executable(ClassificationTP main.c
