@@ -15,10 +15,6 @@ Dataset* Dataset_readFromFile(char* filename) {
 		return NULL;
 	}
 
-	dataset->classCount = 0;
-	dataset->featureCount = 0;
-	dataset->instanceCount = 0;
-
 	if (fscanf(file, "%d %d %d", &dataset->instanceCount, &dataset->classCount, &dataset->featureCount) != 3)
 	{
 		printf("Dataset file format error\n");
@@ -54,7 +50,7 @@ Subproblem* Subproblem_create(int maximumCapacity, int featureCount, int classCo
 	subproblem->instanceCount = 0;
 	subproblem->capacity = maximumCapacity;
 
-	// Alloue le tableau de pointeurs d'instances à la capacité max
+	// Alloue le tableau de pointeurs d'instances ï¿½ la capacitï¿½ max
 	subproblem->instances = (Instance**)calloc(maximumCapacity, sizeof(Instance*));
 
 	if (subproblem->instances == NULL) {
@@ -86,10 +82,10 @@ Subproblem* Subproblem_create(int maximumCapacity, int featureCount, int classCo
 
 void Subproblem_insert(Subproblem* subproblem, Instance* instance)
 {
-	// Insère l'adresse de l'instance dans le tableau principal
+	// Insï¿½re l'adresse de l'instance dans le tableau principal
 	subproblem->instances[subproblem->instanceCount] = instance;
 
-	// Insère l'adresse de l'instance dans le tableau dédié à sa classe
+	// Insï¿½re l'adresse de l'instance dans le tableau dï¿½diï¿½ ï¿½ sa classe
 	int classId = instance->classID;
 
 	subproblem->classes[classId].instances[
@@ -97,7 +93,7 @@ void Subproblem_insert(Subproblem* subproblem, Instance* instance)
 	] = instance;
 	subproblem->classes[classId].instanceCount++;
 
-	// Incrémente le nombre d'instances
+	// Incrï¿½mente le nombre d'instances
 	subproblem->instanceCount++;
 }
 
@@ -128,12 +124,12 @@ Subproblem* Dataset_getSubproblem(Dataset* data) {
 		return NULL;
 	}
 
-	// Création du sous problème
+	// Crï¿½ation du sous problï¿½me
 	Subproblem* subproblem = Subproblem_create(
 		data->instanceCount, data->featureCount, data->classCount
 	);
 
-	// Ajout des instances dans le sous problème
+	// Ajout des instances dans le sous problï¿½me
 	for (int i = 0; i < data->instanceCount; i++) {
 		Subproblem_insert(subproblem, &data->instances[i]);
 	}
