@@ -1,9 +1,10 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
+#define THREADS 8
 
 // POWER MODE
 // Can take : "efficient" | "performance"
-#define POWER_MODE() "efficient"
+#define POWER_MODE() "performance"
 
 #include <assert.h>
 #include <stdbool.h>
@@ -18,6 +19,7 @@
 #include "Tests.h"
 #include "string.h"
 #include "math.h"
+#include <omp.h>
 
 
 #define AssertNew(ptr) { if (ptr == NULL) { assert(false); abort(); } }
