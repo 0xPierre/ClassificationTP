@@ -116,7 +116,7 @@ void updatePaintMatrix(Input input, int matrix[FEATURES_COUNT][FEATURES_COUNT]) 
 void RunSdl() {
     SDL_Window* window = initSDL();
     if (window == NULL) {
-        return 1;
+        exit(1);
     }
 
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
@@ -124,7 +124,7 @@ void RunSdl() {
         printf("Renderer could not be created! SDL_Error: %s\n", SDL_GetError());
         SDL_DestroyWindow(window);
         SDL_Quit();
-        return 1;
+        exit(1);
     }
 
     Input input = { .quit = false };

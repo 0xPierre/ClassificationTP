@@ -12,8 +12,7 @@ typedef struct sInput {
 
 SDL_Window* initSDL();
 
-void drawPainterPixel(SDL_Renderer* renderer, int x, int y, int r, int g, int b);
-
+void drawPainterPixel(SDL_Renderer* renderer, int x, int y, int color);
 /**
 * This function allows to run the interface using SDL.
 */
