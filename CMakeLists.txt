@@ -11,3 +11,4 @@ add_executable(ClassificationTP main.c
         ForestFileHandler.c
         RandomForest.c
         Tests.c)
+target_link_libraries(ClassificationTP m)
