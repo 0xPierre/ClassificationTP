@@ -76,11 +76,7 @@ Split Split_compute(Subproblem *subproblem) {
             }
         }
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "Simplify"
         if (strcmp(POWER_MODE(), "efficient") == 0) {
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "UnreachableCode"
             for (int y = min; y <= max; ++y) {
                 // Calcul le meilleur gini
                 float gini = Split_gini(subproblem, i, (float) y);
@@ -91,9 +87,6 @@ Split Split_compute(Subproblem *subproblem) {
                     split.threshold = (float) y;
                 }
             }
-#pragma clang diagnostic pop
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "UnreachableCode"
         } else {
             float threshold = ((float) min + (float) max) / 2;
 
@@ -105,9 +98,6 @@ Split Split_compute(Subproblem *subproblem) {
                 split.featureID = i;
             }
         }
-#pragma clang diagnostic pop
-#pragma clang diagnostic pop
-#pragma clang diagnostic pop
     }
 
     return split;
