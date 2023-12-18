@@ -85,7 +85,7 @@ void test_random_forest()
     printf("Get subproblem\n");
     Subproblem* sp = Dataset_getSubproblem(trainData);
     printf("Create random forest\n");
-    RandomForest* rf = RandomForest_create(20, trainData, 30, 0.5f, 1.0f);
+    RandomForest* rf = RandomForest_create(20, trainData, 30, 1.0f, 1.0f);
     printf("Evaluate train\n");
     float scoreTrain = RandomForest_evaluate(rf, trainData);
     printf("Evaluate test\n");

@@ -84,6 +84,7 @@ RandomForest* LoadForestFromFile(char path[128]) {
 		rf->trees[i] = tree;
 	}
 
+	fclose(file);
 
 	return rf;
 }
