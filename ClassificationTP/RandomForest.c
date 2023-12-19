@@ -8,7 +8,8 @@ Subproblem *Dataset_bagging(Dataset *data, float proportion) {
 
     // Insertion d'instances al�atoires dans le sous-probl�me
     for (int i = 0; i < maximumCapacity; i++) {
-        int randomIndex = rand() % data->instanceCount;
+        //int randomIndex = rand() % data->instanceCount;
+        int randomIndex = ((rand() ^ (rand() << 15)) & 0x7FFFFFFF) % data->instanceCount;
         Subproblem_insert(subproblem, &data->instances[randomIndex]);
     }
 

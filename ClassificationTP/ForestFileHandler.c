@@ -60,10 +60,13 @@ void ForestFileDump(RandomForest* rf, char path[128]) {
 RandomForest* LoadForestFromFile(char path[128]) {
 	printf("Opening file %s\n", path);
 	FILE* file = fopen(path, "r");
+	if (file == NULL) {
+		printf("Erreur opening file\n");
+		assert(false);
+	}
 
 	RandomForest* rf = (RandomForest*)calloc(1, sizeof(RandomForest));
 	AssertNew(rf);
-
 	if (fscanf(file, "%d %d", &rf->treeCount, &rf->classCount) != 2) assert(false);
 
 	rf->trees = (DecisionTreeNode**)calloc(rf->treeCount, sizeof(DecisionTreeNode*));

@@ -37,10 +37,10 @@ void test_node_tree_count()
 
 void test_train_test_evaluation()
 {
-    char pathTrain[128] = "../Datasets/PENDIGITS_train.txt";
+    char pathTrain[128] = "../Datasets/MNIST_train.txt";
     printf("Read train dataset\n");
     Dataset* trainData = Dataset_readFromFile(pathTrain);
-    char pathTest[128] = "../Datasets/PENDIGITS_test.txt";
+    char pathTest[128] = "../Datasets/MNIST_test.txt";
     printf("Read test dataset\n");
     Dataset* testData = Dataset_readFromFile(pathTest);
     printf("Get train subproblem\n");
@@ -143,7 +143,7 @@ void vpl_test(char pathTrain[128], char pathTest[128])
 
 void test_dump_forest()
 {
-    char pathTrain[128] = "Datasets/PENDIGITS_train.txt";
+    char pathTrain[128] = "../Datasets/MNIST_train.txt";
     printf("Read train dataset\n");
     Dataset* trainData = Dataset_readFromFile(pathTrain);
     printf("Get subproblem\n");
@@ -152,8 +152,8 @@ void test_dump_forest()
     RandomForest* rf = RandomForest_create(5, trainData, 30, 0.5f, 1.0f);
 
 
-    ForestFileDump(rf, "Forests/PENDIGITS.dfm");
-    RandomForest* rf2 = LoadForestFromFile("Forests/PENDIGITS.dfm");
+    ForestFileDump(rf, "../Forests/MNIST3.dfm");
+    RandomForest* rf2 = LoadForestFromFile("../Forests/MNIST3.dfm");
 
     float scoreTrain = RandomForest_evaluate(rf, trainData);
     printf("Score train : %f\n", scoreTrain);
@@ -164,4 +164,19 @@ void test_dump_forest()
     RandomForest_destroy(rf2);
     Dataset_destroy(trainData);
     Subproblem_destroy(sp);
+}
+
+void test_load_forest()
+{
+    char pathTrain[128] = "../Datasets/MNIST_train.txt";
+    printf("Read train dataset\n");
+    Dataset* trainData = Dataset_readFromFile(pathTrain);
+    printf("Read test dataset\n");
+    Dataset* testData = Dataset_readFromFile("../Datasets/MNIST_test.txt");
+    RandomForest* rf2 = LoadForestFromFile("../Forests/MNIST3.dfm");
+
+    float scoreTrain = RandomForest_evaluate(rf2, trainData);
+    printf("Score train imported : %f\n", scoreTrain);
+    float scoreTest = RandomForest_evaluate(rf2, testData);
+    printf("Score test imported : %f\n", scoreTest);
 }

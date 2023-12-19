@@ -16,3 +16,5 @@ void test_memory();
 void vpl_test(char pathTrain[128], char pathTest[128]);
 
 void test_dump_forest();
+
+void test_load_forest();
