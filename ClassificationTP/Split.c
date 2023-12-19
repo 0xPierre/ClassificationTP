@@ -17,14 +17,12 @@ float Split_gini(Subproblem *sp, int featureID, float threshold) {
         Instance *instance = sp->instances[i];
 
         if (instance->values[featureID] <= threshold) {
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "Simplify"
+
             if (strcmp(POWER_MODE(), "efficient") == 0 && (instance->values[featureID] == threshold)) {
                 Subproblem_insert(rightSubproblem, instance);
             } else {
                 Subproblem_insert(leftSubproblem, instance);
             }
-#pragma clang diagnostic pop
         } else {
             Subproblem_insert(rightSubproblem, instance);
         }
