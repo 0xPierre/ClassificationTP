@@ -2,26 +2,26 @@
 
 
 int main(int argc, char* args[]) {
-    
-    RandomForest *rf = LoadForestFromFile("../Forests/MNIST3.dfm");
+
+    /*RandomForest *rf = LoadForestFromFile("../Forests/MNIST50.dfm");
 
     RunSdl(rf);
-    RandomForest_destroy(rf);
+    RandomForest_destroy(rf);*/
 
-    //double start = omp_get_wtime();
+    //char train[128] = "../Datasets/MNIST_train.txt";
+    //char test[128] = "../Datasets/MNIST_test.txt";
+    //////forest
 
-    ////test_split_compute();
-    ////test_node_tree_count();
-    //test_train_test_evaluation();
-    ////test_Dataset_bagging();
-    ////test_random_forest();
-    ///*test_memory();*/
-    //test_dump_forest();
-    test_load_forest();
+    ////test_random_forest(train, test, 20);
+    //test_load_forest(train, test, "../Forests/MNIST50.dfm");
 
 
-    //double end = omp_get_wtime();
-    //printf("Work took %f seconds\n", end - start);
+    char train[128] = "../Datasets/MNIST_train_filtered.txt";
+    char test[128] = "../Datasets/MNIST_test_filtered.txt";
 
+    //test_datasets_improvement(train, test);
+
+    test_random_forest(train, test, 5);
+     
     return 0;
 }

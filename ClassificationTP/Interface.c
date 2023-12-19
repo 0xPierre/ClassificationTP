@@ -134,6 +134,10 @@ void RunSdl(RandomForest *rf) {
 
     Input input = { .quit = false };
     int matrix[FEATURES_COUNT][FEATURES_COUNT] = { 0 };
+    Instance * predictionInstance = calloc(1, sizeof(Instance));
+    AssertNew(predictionInstance);
+    predictionInstance->values = (int*)calloc(FEATURES_COUNT * FEATURES_COUNT, sizeof(int));
+    AssertNew(predictionInstance->values);
 
 
     while (!input.quit) {
@@ -146,17 +150,6 @@ void RunSdl(RandomForest *rf) {
         When u middle mouse click, it reset the matrix to black
         */
         if (input.mouseButton == SDL_BUTTON_MIDDLE) {
-            Instance *instance = calloc(1, sizeof(Instance));
-            instance->values = (int*)calloc(FEATURES_COUNT * FEATURES_COUNT, sizeof(int));
-
-            for (int x = 0; x < FEATURES_COUNT; x++) {
-                for (int y = 0; y < FEATURES_COUNT; y++) {
-                    instance->values[(x * FEATURES_COUNT) + y] = matrix[x][y];
-                }
-            }
-            
-            int prediction = RandomForest_predict(rf, instance);
-            printf("predict: %d\n", prediction);
 
             for (int x = 0; x < FEATURES_COUNT; x++) {
                 for (int y = 0; y < FEATURES_COUNT; y++) {
@@ -166,6 +159,15 @@ void RunSdl(RandomForest *rf) {
         }
         else
             updatePaintMatrix(input, matrix);
+
+        for (int x = 0; x < FEATURES_COUNT; x++) {
+            for (int y = 0; y < FEATURES_COUNT; y++) {
+                predictionInstance->values[(x * FEATURES_COUNT) + y] = matrix[x][y];
+            }
+        }
+
+        int prediction = RandomForest_predict(rf, predictionInstance);
+        printf("predict: %d\n", prediction);
         
             
         for (int x = 0; x < FEATURES_COUNT; x++) {

@@ -28,7 +28,7 @@
 #include "DecisionTree.h"
 #include "RandomForest.h"
 #include "ForestFileHandler.h"
-#include "Tests.h"
+#include "DatasetImprovement.h"
 #include "Interface.h"
 #include "string.h"
 #include "math.h"

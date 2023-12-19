@@ -37,6 +37,29 @@ Dataset* Dataset_readFromFile(char* filename) {
 	return dataset;
 }
 
+void Dataset_writeToFile(Dataset* dataset, char* filename) {
+	FILE* file = fopen(filename, "w");
+
+	if (file == NULL) {
+		printf("Error opening file for writing: %s\n", filename);
+		return;
+	}
+
+	fprintf(file, "%d %d %d\n", dataset->instanceCount, dataset->classCount, dataset->featureCount);
+
+	for (int i = 0; i < dataset->instanceCount; i++) {
+		fprintf(file, "%d\t", dataset->instances[i].classID);
+
+		for (int j = 0; j < dataset->featureCount; j++) {
+			fprintf(file, "%d ", dataset->instances[i].values[j]);
+		}
+
+		fprintf(file, "\n");
+	}
+
+	fclose(file);
+}
+
 
 Subproblem* Subproblem_create(int maximumCapacity, int featureCount, int classCount) {
 	Subproblem* subproblem = (Subproblem*)calloc(1, sizeof(Subproblem));

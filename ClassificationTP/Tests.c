@@ -17,11 +17,10 @@ void test_split_compute()
     printf("Process ended successfully\n");
 }
 
-void test_node_tree_count()
+void test_node_tree_count(char *pathTrain)
 {
-    char path[128] = "Datasets/PENDIGITS_train.txt";
 
-    Dataset* trainData = Dataset_readFromFile(path);
+    Dataset* trainData = Dataset_readFromFile(pathTrain);
     Subproblem* sp = Dataset_getSubproblem(trainData);
     printf("Go on\n");
     DecisionTreeNode* tree = DecisionTree_create(sp, 0, 30, 1.0);
@@ -35,12 +34,10 @@ void test_node_tree_count()
 }
 
 
-void test_train_test_evaluation()
+void test_train_test_evaluation(char *pathTrain, char *pathTest)
 {
-    char pathTrain[128] = "../Datasets/MNIST_train.txt";
     printf("Read train dataset\n");
     Dataset* trainData = Dataset_readFromFile(pathTrain);
-    char pathTest[128] = "../Datasets/MNIST_test.txt";
     printf("Read test dataset\n");
     Dataset* testData = Dataset_readFromFile(pathTest);
     printf("Get train subproblem\n");
@@ -61,6 +58,7 @@ void test_train_test_evaluation()
     printf("Process ended successfully\n");
 }
 
+
 void test_Dataset_bagging()
 {
     char path[128] = "Datasets/PENDIGITS_train.txt";
@@ -74,18 +72,16 @@ void test_Dataset_bagging()
     printf("Process ended successfully\n");
 }
 
-void test_random_forest()
+void test_random_forest(char pathTrain[128], char pathTest[128], int treeCount)
 {
-    char pathTrain[128] = "Datasets/PENDIGITS_train.txt";
     printf("Read train dataset\n");
     Dataset* trainData = Dataset_readFromFile(pathTrain);
     printf("Read test dataset\n");
-    char pathTest[128] = "Datasets/PENDIGITS_test.txt";
     Dataset* testData = Dataset_readFromFile(pathTest);
     printf("Get subproblem\n");
     Subproblem* sp = Dataset_getSubproblem(trainData);
     printf("Create random forest\n");
-    RandomForest* rf = RandomForest_create(20, trainData, 30, 0.5f, 1.0f);
+    RandomForest* rf = RandomForest_create(treeCount, trainData, 30, 0.6f, 1.f);
     printf("Evaluate train\n");
     float scoreTrain = RandomForest_evaluate(rf, trainData);
     printf("Evaluate test\n");
@@ -166,17 +162,73 @@ void test_dump_forest()
     Subproblem_destroy(sp);
 }
 
-void test_load_forest()
+void test_load_forest(char pathTrain[128], char pathTest[128], char pathForest[128])
 {
-    char pathTrain[128] = "../Datasets/MNIST_train.txt";
     printf("Read train dataset\n");
     Dataset* trainData = Dataset_readFromFile(pathTrain);
     printf("Read test dataset\n");
-    Dataset* testData = Dataset_readFromFile("../Datasets/MNIST_test.txt");
-    RandomForest* rf2 = LoadForestFromFile("../Forests/MNIST3.dfm");
+    Dataset* testData = Dataset_readFromFile(pathTest);
+    RandomForest* rf2 = LoadForestFromFile(pathForest);
 
     float scoreTrain = RandomForest_evaluate(rf2, trainData);
-    printf("Score train imported : %f\n", scoreTrain);
+    printf("Score train : %f\n", scoreTrain);
     float scoreTest = RandomForest_evaluate(rf2, testData);
-    printf("Score test imported : %f\n", scoreTest);
+    printf("Score test randomforest imported : %f\n", scoreTest);
 }
+
+
+
+void test_datasets_improvement(char* pathTrain, char* pathTest)
+{
+    printf("Read train dataset\n");
+    Dataset* trainData = Dataset_readFromFile(pathTrain);
+    printf("Update train\n");
+
+    printf("Read test dataset\n");
+    printf("Update train\n");
+    Dataset* testData = Dataset_readFromFile(pathTest);
+
+    /*printf("Get subproblem\n");
+    Subproblem* sp = Dataset_getSubproblem(trainData);
+    printf("Create decision tree\n");
+    DecisionTreeNode* tree = DecisionTree_create(sp, 0, 30, 1.0f);
+    printf("Generation d'un arbre de %d noeuds\n", Decision_nodeCount(tree));
+    printf("Evaluation of the tree with train\n");
+    float scoreTrain = DecisionTree_evaluate(tree, trainData);
+    printf("Evaluation of the tree with test\n");
+    float scoreTest = DecisionTree_evaluate(tree, testData);
+    printf("train = %.3f, test = %.3f\n", scoreTrain, scoreTest);*/
+
+    //printf("20\n");
+
+    // print les features de l'instance 0
+    TransformGrayToWhite(trainData, 20, true, 1, 255);
+    TransformGrayToWhite(testData, 20, true, 1, 255);
+
+    ApplyMedianFilter(trainData);
+    ApplyMedianFilter(testData);
+
+    /*Dataset_writeToFile(trainData, "../Datasets/MNIST_train_filtered.txt");
+    Dataset_writeToFile(testData, "../Datasets/MNIST_test_filtered.txt");
+    return;*/
+
+
+    printf("Get subproblem\n");
+    Subproblem* sp2 = Dataset_getSubproblem(trainData);
+    printf("Create decision tree\n");
+    DecisionTreeNode* tree2 = DecisionTree_create(sp2, 0, 30, 1.0f);
+    printf("Generation d'un arbre de %d noeuds\n", Decision_nodeCount(tree2));
+    printf("Evaluation of the tree with train\n");
+    float scoreTrain2 = DecisionTree_evaluate(tree2, trainData);
+    printf("Evaluation of the tree with test\n");
+    float scoreTest2 = DecisionTree_evaluate(tree2, testData);
+    printf("train = %.3f, test = %.3f\n", scoreTrain2, scoreTest2);
+
+    Subproblem_destroy(sp2);
+    DecisionTree_destroy(tree2);
+    Dataset_destroy(trainData);
+    Dataset_destroy(testData);
+}
+
+
+//void test_randforest_improvement()

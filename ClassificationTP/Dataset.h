@@ -29,6 +29,8 @@ typedef struct sSubproblem {
 
 Dataset* Dataset_readFromFile(char* filename);
 
+void Dataset_writeToFile(Dataset* dataset, char* filename);
+
 void Dataset_destroy(Dataset* data);
 
 Subproblem* Dataset_getSubproblem(Dataset* data);

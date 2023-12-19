@@ -38,6 +38,9 @@ DecisionTreeNode* DecisionTree_create(Subproblem* sp, int currentDepth, int maxD
 		return node;
 	}
 
+	if (sp->instanceCount == 0) {
+		return node;
+	}
 	// La purete est inf�rieure � prunningThreshold
 	// On calcule le split
 	node->split = Split_compute(sp);
