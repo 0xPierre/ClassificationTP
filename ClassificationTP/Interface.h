@@ -15,6 +15,16 @@ typedef struct sInput {
 	bool quit;
 } Input;
 
+
+typedef struct sButton {
+    char label[20];
+    int x;
+    int y;
+    float size;
+} Button;
+
+SDL_Rect  AddButton(Button button, SDL_Renderer* renderer);
+
 /*
 Init the SDL
 */

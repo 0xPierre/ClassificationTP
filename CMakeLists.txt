@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.27)
 project(ClassificationTP C)
 
 set(CMAKE_C_STANDARD 23)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fopenmp")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fopenmp -lSDL2_image -lSDL2_ttf")
 file(COPY Datasets DESTINATION ${CMAKE_BINARY_DIR})
 
 add_executable(ClassificationTP ClassificationTP/main.c
@@ -13,5 +13,8 @@ add_executable(ClassificationTP ClassificationTP/main.c
         ClassificationTP/RandomForest.c
         ClassificationTP/Split.c
         ClassificationTP/Tests.c
+        ClassificationTP/DatasetImprovement.c
+        ClassificationTP/Text.c
+        ClassificationTP/Text.h
 )
 target_link_libraries(ClassificationTP m SDL2)

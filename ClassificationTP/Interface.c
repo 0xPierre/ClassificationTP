@@ -1,16 +1,17 @@
 #include "Settings.h"
 
 
-const int images_shade_of_white[] = { 10, 50, 80, 120, 190, 220 };
+const int images_shade_of_white[] = {10, 50, 80, 120, 190, 220};
 
 
-SDL_Window* initSDL() {
+SDL_Window *initSDL() {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("Couldn't intialize SDL_Error: %s\n", SDL_GetError());
         return NULL;
     }
 
-    SDL_Window* window = SDL_CreateWindow("Paint AI", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    SDL_Window *window = SDL_CreateWindow("Paint AI", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
+                                          SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     if (window == NULL) {
         printf("COund't create window SDL_Error: %s\n", SDL_GetError());
         SDL_Quit();
@@ -20,7 +21,7 @@ SDL_Window* initSDL() {
     return window;
 }
 
-void drawPainterPixel(SDL_Renderer* renderer, int x, int y, int color) {
+void drawPainterPixel(SDL_Renderer *renderer, int x, int y, int color) {
     SDL_SetRenderDrawColor(renderer, color, color, color, 255);
 
     SDL_Rect rect;
@@ -35,34 +36,34 @@ void drawPainterPixel(SDL_Renderer* renderer, int x, int y, int color) {
 
 Input getInputs() {
     SDL_Event event;
-    Input input = { .isMouseClick = false, .quit = false };
+    Input input = {.isMouseClick = false, .quit = false};
 
     while (SDL_PollEvent(&event) != 0) {
         switch (event.type) {
-        case SDL_MOUSEMOTION : {
-            if (event.button.button != SDL_BUTTON_MIDDLE) {
+            case SDL_MOUSEMOTION : {
+                if (event.button.button != SDL_BUTTON_MIDDLE) {
+                    int mouseX, mouseY;
+                    SDL_GetMouseState(&mouseX, &mouseY);
+                    input.isMouseClick = event.button.button > 0;
+                    input.mouseButton = event.button.button;
+                    input.mouseX = mouseX;
+                    input.mouseY = mouseY;
+                }
+                break;
+            }
+            case SDL_MOUSEBUTTONDOWN: {
                 int mouseX, mouseY;
                 SDL_GetMouseState(&mouseX, &mouseY);
                 input.isMouseClick = event.button.button > 0;
                 input.mouseButton = event.button.button;
                 input.mouseX = mouseX;
                 input.mouseY = mouseY;
+                break;
             }
-            break;
-        }
-        case SDL_MOUSEBUTTONDOWN: {
-            int mouseX, mouseY;
-            SDL_GetMouseState(&mouseX, &mouseY);
-            input.isMouseClick = event.button.button > 0;
-            input.mouseButton = event.button.button;
-            input.mouseX = mouseX;
-            input.mouseY = mouseY;
-            break;
-        }
-        //case SDL_MOUSEBUTTONUP: {
-        //    //if ()
-        //    break;
-        //}
+                //case SDL_MOUSEBUTTONUP: {
+                //    //if ()
+                //    break;
+                //}
         }
 
         if (event.type == SDL_QUIT) {
@@ -80,7 +81,7 @@ void applyConvolution(int matrix[FEATURES_COUNT][FEATURES_COUNT], int x, int y) 
 
     for (int x1 = -1; x1 < 2; x1++) {
         int xt = (x + x1);
-        
+
         if (xt < 0 || xt >= FEATURES_COUNT) continue;
         for (int y1 = -1; y1 < 2; y1++) {
             int yt = (y + y1);
@@ -97,39 +98,74 @@ void applyConvolution(int matrix[FEATURES_COUNT][FEATURES_COUNT], int x, int y) 
 void updatePaintMatrix(Input input, int matrix[FEATURES_COUNT][FEATURES_COUNT]) {
     if (!input.isMouseClick) return;
 
-    int x = (int)((float)input.mouseX * (float)FEATURES_COUNT / (float)PAINT_RECT_SIZE);
-    int y = (int)((float)input.mouseY * (float)FEATURES_COUNT / (float)PAINT_RECT_SIZE);
+    int x = (int) ((float) input.mouseX * (float) FEATURES_COUNT / (float) PAINT_RECT_SIZE);
+    int y = (int) ((float) input.mouseY * (float) FEATURES_COUNT / (float) PAINT_RECT_SIZE);
 
     if (x >= FEATURES_COUNT || y >= FEATURES_COUNT || x < 0 || y < 0) return;
 
     if (input.mouseButton == SDL_BUTTON_LEFT) {
         matrix[x][y] = 255;
-        applyConvolution(matrix, x-1, y-1);
-        applyConvolution(matrix, x, y-1);
-        applyConvolution(matrix, x+1, y-1);
-        applyConvolution(matrix, x-1, y);
-        applyConvolution(matrix, x+1, y);
-        applyConvolution(matrix, x+1, y-1);
-        applyConvolution(matrix, x+1, y);
-        applyConvolution(matrix, x+1, y+1);
-    }
-    else {
+        applyConvolution(matrix, x - 1, y - 1);
+        applyConvolution(matrix, x, y - 1);
+        applyConvolution(matrix, x + 1, y - 1);
+        applyConvolution(matrix, x - 1, y);
+        applyConvolution(matrix, x + 1, y);
+        applyConvolution(matrix, x + 1, y - 1);
+        applyConvolution(matrix, x + 1, y);
+        applyConvolution(matrix, x + 1, y + 1);
+    } else {
         matrix[x][y] = 0;
     }
 }
 
+SDL_Rect AddButton(Button button, SDL_Renderer *renderer) {
+    int imgWidth = 240;
+    int imgHeight = 80;
+
+    SDL_Surface *tmp = NULL;
+    tmp = SDL_LoadBMP("../Assets/buttons/clear_btn.bmp");
+    if (NULL == tmp) {
+        fprintf(stderr, "Erreur SDL_LoadBMP : %s", SDL_GetError());
+        SDL_Quit();
+    }
+
+    SDL_Rect desRect = {
+            button.x,
+            button.y,
+            (int) ((float) imgWidth * button.size),
+            (int) ((float) imgHeight * button.size)
+    };
+
+    SDL_RenderCopy(renderer, SDL_CreateTextureFromSurface(renderer, tmp), NULL, &desRect);
+    return desRect;
+}
+
+void resetCanvas(int matrix[FEATURES_COUNT][FEATURES_COUNT]) {
+    for (int x = 0; x < FEATURES_COUNT; x++) {
+        for (int y = 0; y < FEATURES_COUNT; y++) {
+            matrix[x][y] = 0;
+        }
+    }
+}
+
 void RunSdl(RandomForest *rf) {
-    SDL_Window* window = initSDL();
+    SDL_Window *window = initSDL();
     if (window == NULL) {
         exit(1);
     }
 
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (renderer == NULL) {
         printf("Renderer could not be created! SDL_Error: %s\n", SDL_GetError());
         SDL_DestroyWindow(window);
         SDL_Quit();
         exit(1);
+    }
+
+    if (TTF_Init() == -1) {
+        printf("ERROR - TTF_Init %s\n", TTF_GetError());
+        assert(false);
+        abort();
     }
 
     Input input = { .quit = false };
@@ -145,19 +181,13 @@ void RunSdl(RandomForest *rf) {
 
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderClear(renderer);
-        
+
         /*
         When u middle mouse click, it reset the matrix to black
         */
         if (input.mouseButton == SDL_BUTTON_MIDDLE) {
-
-            for (int x = 0; x < FEATURES_COUNT; x++) {
-                for (int y = 0; y < FEATURES_COUNT; y++) {
-                    matrix[x][y] = 0;
-                }
-            }
-        }
-        else
+            resetCanvas(matrix);
+        } else
             updatePaintMatrix(input, matrix);
 
         for (int x = 0; x < FEATURES_COUNT; x++) {
@@ -168,12 +198,30 @@ void RunSdl(RandomForest *rf) {
 
         int prediction = RandomForest_predict(rf, predictionInstance);
         printf("predict: %d\n", prediction);
-        
-            
+
+
         for (int x = 0; x < FEATURES_COUNT; x++) {
             for (int y = 0; y < FEATURES_COUNT; y++) {
-                drawPainterPixel(renderer, x, y,matrix[x][y]);
+                drawPainterPixel(renderer, x, y, matrix[x][y]);
             }
+        }
+
+
+        SDL_bool SDL_PointInRect(const SDL_Point *p,
+                                 const SDL_Rect *r);
+
+
+        Button button;
+        button.x = 560;
+        button.y = 5;
+        button.size = 1;
+        SDL_Rect rect = AddButton(button, renderer);
+
+        SDL_Point point = {input.mouseX, input.mouseY};
+
+        if (SDL_PointInRect(&point, &rect) && input.isMouseClick) {
+            printf("RESET\n");
+            resetCanvas(matrix);
         }
 
 

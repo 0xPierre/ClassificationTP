@@ -13,8 +13,8 @@
 #  include "SDL_mixer.h"
 #else
 #  include <SDL2/SDL.h>
-//#  include <SDL2/SDL_image.h>
-//#  include <SDL2/SDL_ttf.h>
+#  include <SDL2/SDL_image.h>
+#  include <SDL2/SDL_ttf.h>
 //#  include <SDL2/SDL_mixer.h>
 #endif
 
@@ -32,6 +32,8 @@
 #include "Interface.h"
 #include "string.h"
 #include "math.h"
+#include "Tests.h"
+#include "Text.h"
 #include <omp.h>
 
 
