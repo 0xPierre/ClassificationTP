@@ -154,8 +154,8 @@ void updatePaintMatrix(Input input, int matrix[FEATURES_COUNT][FEATURES_COUNT], 
 }
 
 SDL_Rect AddButton(Button button, SDL_Renderer *renderer) {
-    int imgWidth = 240;
-    int imgHeight = 80;
+    int imgWidth = 150;
+    int imgHeight = 50;
 
     SDL_Surface *tmp = NULL;
     tmp = SDL_LoadBMP("../Assets/buttons/clear_btn.bmp");
@@ -270,8 +270,8 @@ void RunSdl(RandomForest *rf) {
         }
 
         Button button;
-        button.x = 560;
-        button.y = 5;
+        button.x = 600;
+        button.y = 10;
         button.size = 1;
         SDL_Rect rect = AddButton(button, renderer);
 
