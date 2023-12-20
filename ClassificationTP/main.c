@@ -5,22 +5,22 @@ DecisionArgs Args = { GINI_NORMAL };
 
 int main(int argc, char* args[]) {
 
-    /*RandomForest *rf = LoadForestFromFile("../Forests/MNIST20tree_965.dfm");
-
+    RandomForest *rf = LoadForestFromFile("../Forests/MNIST20tree_965.dfm");
+//
     RunSdl(rf);
-    RandomForest_destroy(rf);*/
+    RandomForest_destroy(rf);
 
-    Args.split = GINI_NORMAL;
-    Args.treeCount = 2;
-
-    Args.useFeatureBagging = false;
-    Args.featureBaggingProportion = 0.7f;
-
-    Args.instanceBaggingProportion = 0.7f;
-
-    strcpy(Args.trainPath, "../Datasets/MNIST_train.txt");
-    strcpy(Args.testPath, "../Datasets/PENDIGITS_test.txt");
-
+//    Args.split = GINI_NORMAL;
+//    Args.treeCount = 20;
+////
+//    Args.useFeatureBagging = false;
+//    Args.featureBaggingProportion = 0.7f;
+////
+//    Args.instanceBaggingProportion = 0.8f;
+////
+//    strcpy(Args.trainPath, "../Datasets/MNIST_train.txt");
+//    strcpy(Args.testPath, "../Datasets/MNIST_test.txt");
+//
     StartTest();
 
     //char train[128] = "../Datasets/PENDIGITS_train.txt";
@@ -39,6 +39,6 @@ int main(int argc, char* args[]) {
     //test_datasets_improvement(train, test);
 
     //test_random_forest(train, test, 5);
-     
+
     return 0;
 }

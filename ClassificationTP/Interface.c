@@ -111,7 +111,7 @@ void applyBrush(int matrix[FEATURES_COUNT][FEATURES_COUNT], float x, float y, in
 
             intensity = (intensity < 0) ? 0 : (intensity > 255) ? 255 : intensity;
 
-            matrix[(int)i][(int)j] = max(intensity, matrix[(int)i][(int)j]);
+            matrix[(int)i][(int)j] = fmax(intensity, matrix[(int)i][(int)j]);
         }
     }
 }
@@ -121,6 +121,9 @@ void updatePaintMatrix(Input input, int matrix[FEATURES_COUNT][FEATURES_COUNT], 
 
     int x = (int) ((float) input.mouseX * (float) FEATURES_COUNT / (float) PAINT_RECT_SIZE);
     int y = (int) ((float) input.mouseY * (float) FEATURES_COUNT / (float) PAINT_RECT_SIZE);
+
+    float xF = (float)input.mouseX * (float)FEATURES_COUNT / (float)PAINT_RECT_SIZE;
+    float yF = (float)input.mouseY * (float)FEATURES_COUNT / (float)PAINT_RECT_SIZE;
 
     if (x >= FEATURES_COUNT || y >= FEATURES_COUNT || x < 0 || y < 0) return;
 
@@ -226,6 +229,20 @@ void RunSdl(RandomForest *rf) {
 
         int prediction = RandomForest_predict(rf, predictionInstance);
         printf("predict: %d\n", prediction);
+
+        Text settings;
+        settings.x = 600;
+        settings.y = 200;
+        sprintf(settings.label, "%d", prediction);
+        settings.color.r = 94;
+        settings.color.g = 23;
+        settings.color.b = 235;
+
+        settings.fontSize = 400;
+        settings.recWidth = 150;
+        settings.rectHeight = 300;
+
+        Text_New(settings, renderer);
 
 
         for (int x = 0; x < FEATURES_COUNT; x++) {
