@@ -34,21 +34,23 @@ Dataset* DatasetCountWhite(Dataset* dataset) {
 }
 
 
-void TransformGrayToWhite(Dataset* dataset, int threshold, bool setToMin, int min, int max) {
-	int a, b;
-	for (int i = 0; i < dataset->instanceCount; i++) {
-		for (int j = 0; j < dataset->featureCount; j++) {
-			if (dataset->instances[i].values[j] >= threshold) {
-				dataset->instances[i].values[j] = max;
-				a = i;
-				b = j;
-			}
-			else if (setToMin) {
-				dataset->instances[i].values[j] = min;
-			}
+void TransFormGrayToWhiteOneFeature(int* values, int featureCount, int threshold, bool setToMin, int min, int max) {
+	for (int i = 0; i < featureCount; i++) {
+		if (values[i] >= threshold) {
+			values[i] = max;
+		}
+		else if (setToMin) {
+			values[i] = min;
 		}
 	}
 }
+
+void TransformGrayToWhite(Dataset* dataset, int threshold, bool setToMin, int min, int max) {
+	for (int i = 0; i < dataset->instanceCount; i++) {
+		TransFormGrayToWhiteOneFeature(dataset->instances[i].values, dataset->featureCount, threshold, setToMin, min, max);
+	}
+}
+
 
 
 int calculate_median(int* matrix, int size) {

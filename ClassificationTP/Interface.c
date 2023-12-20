@@ -91,27 +91,56 @@ void applyConvolution(int matrix[FEATURES_COUNT][FEATURES_COUNT], int x, int y) 
     }
 
     if (matrix[x][y] != 255)
-        matrix[x][y] = sum / sumXY;
+        matrix[x][y] = (sum / sumXY);
 }
 
-void updatePaintMatrix(Input input, int matrix[FEATURES_COUNT][FEATURES_COUNT]) {
+void applyBrush(int matrix[FEATURES_COUNT][FEATURES_COUNT], float x, float y, int brushSize) {
+    if (x < 0 || x >= FEATURES_COUNT || y < 0 || y >= FEATURES_COUNT) return;
+
+    if (brushSize < 1)  return;
+    
+    float startX = (x - brushSize < 0) ? 0 : x - brushSize;
+    float startY = (y - brushSize < 0) ? 0 : y - brushSize;
+    float endX = (x + brushSize >= FEATURES_COUNT) ? FEATURES_COUNT - 1 : x + brushSize;
+    float endY = (y + brushSize >= FEATURES_COUNT) ? FEATURES_COUNT - 1 : y + brushSize;
+    for (float i = startX; i <= endX; ++i) {
+        for (float j = startY; j <= endY; ++j) {
+            float distanceSquared = (x - i) * (x - i) + (y - j) * (y - j);
+            int intensity = 255 - ((int)distanceSquared * 255) / (brushSize * brushSize);
+
+            intensity = (intensity < 0) ? 0 : (intensity > 255) ? 255 : intensity;
+
+            matrix[(int)i][(int)j] = max(intensity, matrix[(int)i][(int)j]);
+        }
+    }
+}
+
+void updatePaintMatrix(Input input, int matrix[FEATURES_COUNT][FEATURES_COUNT], int typeOfBrush) {
     if (!input.isMouseClick) return;
 
     int x = (int)((float)input.mouseX * (float)FEATURES_COUNT / (float)PAINT_RECT_SIZE);
     int y = (int)((float)input.mouseY * (float)FEATURES_COUNT / (float)PAINT_RECT_SIZE);
 
+    float xF = (float)input.mouseX * (float)FEATURES_COUNT / (float)PAINT_RECT_SIZE;
+    float yF = (float)input.mouseY * (float)FEATURES_COUNT / (float)PAINT_RECT_SIZE;
+
     if (x >= FEATURES_COUNT || y >= FEATURES_COUNT || x < 0 || y < 0) return;
 
     if (input.mouseButton == SDL_BUTTON_LEFT) {
-        matrix[x][y] = 255;
-        applyConvolution(matrix, x-1, y-1);
-        applyConvolution(matrix, x, y-1);
-        applyConvolution(matrix, x+1, y-1);
-        applyConvolution(matrix, x-1, y);
-        applyConvolution(matrix, x+1, y);
-        applyConvolution(matrix, x+1, y-1);
-        applyConvolution(matrix, x+1, y);
-        applyConvolution(matrix, x+1, y+1);
+        if (typeOfBrush == 0) {
+            matrix[x][y] = 255;
+            applyConvolution(matrix, x-1, y-1);
+            applyConvolution(matrix, x, y - 1);
+            applyConvolution(matrix, x-1, y+1);
+            applyConvolution(matrix, x-1, y);
+            applyConvolution(matrix, x+1, y);
+            applyConvolution(matrix, x+1, y-1);
+            applyConvolution(matrix, x, y+1);
+            applyConvolution(matrix, x+1, y+1);
+        }
+        else if (typeOfBrush == 1) {
+            applyBrush(matrix, xF, yF, 2);
+        }
     }
     else {
         matrix[x][y] = 0;
@@ -139,6 +168,10 @@ void RunSdl(RandomForest *rf) {
     predictionInstance->values = (int*)calloc(FEATURES_COUNT * FEATURES_COUNT, sizeof(int));
     AssertNew(predictionInstance->values);
 
+    // 0 = paint using sum of neighbors
+    // 1 = paint using brush
+    int typeOfBrush = 0;
+
 
     while (!input.quit) {
         input = getInputs();
@@ -157,8 +190,9 @@ void RunSdl(RandomForest *rf) {
                 }
             }
         }
-        else
-            updatePaintMatrix(input, matrix);
+        else {
+            updatePaintMatrix(input, matrix, typeOfBrush);
+        }
 
         for (int x = 0; x < FEATURES_COUNT; x++) {
             for (int y = 0; y < FEATURES_COUNT; y++) {

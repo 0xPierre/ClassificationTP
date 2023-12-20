@@ -6,6 +6,12 @@ Return a new dataset with a feature containing the number of white pixels
 */
 Dataset* DatasetCountWhite(Dataset* dataset);
 
+
+/*
+Transform the gray pixels to white or black/shade
+*/
+void TransFormGrayToWhiteOneFeature(int* values, int featureCount, int threshold, bool setToMin, int min, int max);
+
 /*
 Transform the gray pixels to white or black
 @param threshold: the threshold to transform the pixels

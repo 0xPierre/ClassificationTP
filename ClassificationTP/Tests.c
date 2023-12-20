@@ -147,8 +147,8 @@ void test_dump_forest(char pathTrain[128], char pathTest[128], int treeCount)
     RandomForest* rf = RandomForest_create(treeCount, trainData, 30, 0.5f, 1.0f);
 
 
-    ForestFileDump(rf, "../Forests/MNIST3-PIERRE.dfm");
-    RandomForest* rf2 = LoadForestFromFile("../Forests/MNIST3-PIERRE.dfm");
+    ForestFileDump(rf, "./MNIST_BIGFOREST.txt");
+    RandomForest* rf2 = LoadForestFromFile("./MNIST_BIGFOREST.txt");
 
     float scoreTrain = RandomForest_evaluate(rf, trainData);
     printf("Score train : %f\n", scoreTrain);

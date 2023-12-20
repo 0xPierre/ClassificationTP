@@ -1,6 +1,6 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
-#define THREADS 8
+#define THREADS 16
 
 // POWER MODE
 // Can take : "efficient" | "performance"
@@ -32,6 +32,7 @@
 #include "Interface.h"
 #include "string.h"
 #include "math.h"
+#include "Tests.h"
 #include <omp.h>
 
 
