@@ -11,7 +11,7 @@
 #  include <SDL2/SDL.h>
 #  include <SDL2/SDL_image.h>
 #  include <SDL2/SDL_ttf.h>
-#  include <SDL2/SDL_mixer.h>
+//#  include <SDL2/SDL_mixer.h>
 #endif
 
 #include <assert.h>
@@ -29,6 +29,7 @@
 #include "string.h"
 #include "math.h"
 #include "Tests.h"
+#include "HyperParameters.h"
 #include "Text.h"
 #include "Sound.h"
 #include <omp.h>
@@ -44,6 +45,7 @@ enum SplitType {
 
 typedef struct sDecisionArgs {
     int treeCount;
+    int maxDepth;
     enum SplitType split;
 
     bool useFeatureBagging;
@@ -54,6 +56,9 @@ typedef struct sDecisionArgs {
 
     char trainPath[128];
     char testPath[128];
+
+    bool isSilent;
+    int prunningThreshold;
 } DecisionArgs;
 
 extern DecisionArgs Args;

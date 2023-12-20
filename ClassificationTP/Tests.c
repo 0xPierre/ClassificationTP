@@ -81,7 +81,7 @@ void test_random_forest(char pathTrain[128], char pathTest[128], int treeCount)
     printf("Get subproblem\n");
     Subproblem* sp = Dataset_getSubproblem(trainData);
     printf("Create random forest\n");
-    RandomForest* rf = RandomForest_create(treeCount, trainData, 30, Args.instanceBaggingProportion, 1.f);
+    RandomForest* rf = RandomForest_create(treeCount, trainData, 25, Args.instanceBaggingProportion, Args.prunningThreshold);
     printf("Evaluate train\n");
     float scoreTrain = RandomForest_evaluate(rf, trainData);
     printf("Evaluate test\n");
@@ -153,6 +153,43 @@ void test_datasets_concatenate(char pathTrain[128], char pathTest[128]) {
     printf("Evaluation of the tree with test\n");
     float scoreTest = DecisionTree_evaluate(tree, testDataBig);
     printf("train = %.3f, test = %.3f\n", scoreTrain, scoreTest);
+
+    printf("Get train subproblem\n");
+    Subproblem* sp1 = Dataset_getSubproblem(trainData);
+    printf("Create decision tree\n");
+    DecisionTreeNode* tree1 = DecisionTree_create(sp1, 0, 30, 1.f, NULL);
+    printf("Generation d'un arbre de %d noeuds\n", Decision_nodeCount(tree1));
+    printf("Evaluation of the tree with train\n");
+    scoreTrain = DecisionTree_evaluate(tree1, trainData);
+    printf("Evaluation of the tree with test\n");
+    scoreTest = DecisionTree_evaluate(tree1, testData);
+    printf("train = %.3f, test = %.3f\n", scoreTrain, scoreTest);
+
+    printf("Get train subproblem\n");
+    Subproblem* sp2 = Dataset_getSubproblem(trainData2);
+    printf("Create decision tree\n");
+    DecisionTreeNode* tree2 = DecisionTree_create(sp2, 0, 30, 1.f, NULL);
+    printf("Generation d'un arbre de %d noeuds\n", Decision_nodeCount(tree2));
+    printf("Evaluation of the tree with train\n");
+    scoreTrain = DecisionTree_evaluate(tree2, trainData2);
+    printf("Evaluation of the tree with test\n");
+    scoreTest = DecisionTree_evaluate(tree2, testData2);
+    printf("train = %.3f, test = %.3f\n", scoreTrain, scoreTest);
+
+    Subproblem_destroy(sp);
+    Subproblem_destroy(sp1);
+    Subproblem_destroy(sp2);
+    DecisionTree_destroy(tree);
+    DecisionTree_destroy(tree1);
+    DecisionTree_destroy(tree2);
+
+    Dataset_destroy(trainDataBig);
+    Dataset_destroy(trainData2);
+    Dataset_destroy(trainData);
+
+    Dataset_destroy(testData);
+    Dataset_destroy(testData2);
+    Dataset_destroy(testDataBig);
 }
 
 void test_datasets_count_white(char pathTrain[128], char pathTest[128]) {
@@ -191,19 +228,22 @@ void test_datasets_count_white(char pathTrain[128], char pathTest[128]) {
 
 void vpl_test(char pathTrain[128], char pathTest[128])
 {
-    //Dataset* trainData = Dataset_readFromFile(pathTrain);
-    //char pathTest[128] = "Datasets/PENDIGITS_test.txt";
-    //Dataset* testData = Dataset_readFromFile(pathTest);
-    //Subproblem* sp = Dataset_getSubproblem(trainData);
-    //DecisionTreeNode* tree = DecisionTree_create(sp, 0, 30, 1.0);
-    //float scoreTrain = DecisionTree_evaluate(tree, trainData);
-    //printf("Evaluation of the tree with test\n");
-    //float scoreTest = DecisionTree_evaluate(tree, testData);
-    //printf("train = %.3f, test = %.3f\n", scoreTrain, scoreTest);
-    //Subproblem_destroy(sp);
-    //DecisionTree_destroy(tree);
-    //Dataset_destroy(trainData);
-    //Dataset_destroy(testData);
+    Dataset* trainData = Dataset_readFromFile(pathTrain);
+    Dataset* testData = Dataset_readFromFile(pathTrain);
+
+    Subproblem* sp = Dataset_getSubproblem(trainData);
+    Subproblem_destroy(sp);
+
+    RandomForest * rf = RandomForest_create(17, trainData, 25, 0.5f, 1.0f);
+    
+    for (int i = 0; i < testData->instanceCount; i++) {
+        int classId = RandomForest_predict(rf, &testData->instances[i]);
+        printf("%d\n", classId);
+    }
+
+    Dataset_destroy(trainData);
+    Dataset_destroy(testData);
+    RandomForest_destroy(rf);
 }
 
 void test_dump_forest(char pathTrain[128], char pathTest[128], int treeCount)
