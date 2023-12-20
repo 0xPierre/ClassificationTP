@@ -2,7 +2,7 @@
 
 
 const int images_shade_of_white[] = {10, 50, 80, 120, 190, 220};
-
+int clicked = 0;
 
 SDL_Window *initSDL() {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -54,16 +54,19 @@ Input getInputs() {
             case SDL_MOUSEBUTTONDOWN: {
                 int mouseX, mouseY;
                 SDL_GetMouseState(&mouseX, &mouseY);
-                input.isMouseClick = event.button.button > 0;
+                input.isMouseClick = true;
                 input.mouseButton = event.button.button;
                 input.mouseX = mouseX;
                 input.mouseY = mouseY;
+                clicked = true;
                 break;
             }
-                //case SDL_MOUSEBUTTONUP: {
-                //    //if ()
-                //    break;
-                //}
+            case SDL_MOUSEBUTTONUP: {
+                printf("MOUSE UP\n");
+                input.isMouseClick = false;
+                clicked = false;
+                break;
+            }
         }
 
         if (event.type == SDL_QUIT) {
@@ -98,7 +101,7 @@ void applyConvolution(int matrix[FEATURES_COUNT][FEATURES_COUNT], int x, int y) 
 void applyBrush(int matrix[FEATURES_COUNT][FEATURES_COUNT], float x, float y, int brushSize) {
     if (x < 0 || x >= FEATURES_COUNT || y < 0 || y >= FEATURES_COUNT) return;
 
-    if (brushSize < 1)  return;
+    if (brushSize < 1) return;
 
     float startX = (x - brushSize < 0) ? 0 : x - brushSize;
     float startY = (y - brushSize < 0) ? 0 : y - brushSize;
@@ -107,39 +110,45 @@ void applyBrush(int matrix[FEATURES_COUNT][FEATURES_COUNT], float x, float y, in
     for (float i = startX; i <= endX; ++i) {
         for (float j = startY; j <= endY; ++j) {
             float distanceSquared = (x - i) * (x - i) + (y - j) * (y - j);
-            int intensity = 255 - ((int)distanceSquared * 255) / (brushSize * brushSize);
+            int intensity = 255 - ((int) distanceSquared * 255) / (brushSize * brushSize);
 
             intensity = (intensity < 0) ? 0 : (intensity > 255) ? 255 : intensity;
 
-            matrix[(int)i][(int)j] = fmax(intensity, matrix[(int)i][(int)j]);
+            matrix[(int) i][(int) j] = fmax(intensity, matrix[(int) i][(int) j]);
         }
     }
 }
 
 void updatePaintMatrix(Input input, int matrix[FEATURES_COUNT][FEATURES_COUNT], int typeOfBrush) {
-    if (!input.isMouseClick) return;
+    if (!clicked) {
+        printf("coucou %d\n", clicked);
+        stopMusics();
+        return;
+    }
+
 
     int x = (int) ((float) input.mouseX * (float) FEATURES_COUNT / (float) PAINT_RECT_SIZE);
     int y = (int) ((float) input.mouseY * (float) FEATURES_COUNT / (float) PAINT_RECT_SIZE);
 
-    float xF = (float)input.mouseX * (float)FEATURES_COUNT / (float)PAINT_RECT_SIZE;
-    float yF = (float)input.mouseY * (float)FEATURES_COUNT / (float)PAINT_RECT_SIZE;
+    float xF = (float) input.mouseX * (float) FEATURES_COUNT / (float) PAINT_RECT_SIZE;
+    float yF = (float) input.mouseY * (float) FEATURES_COUNT / (float) PAINT_RECT_SIZE;
 
     if (x >= FEATURES_COUNT || y >= FEATURES_COUNT || x < 0 || y < 0) return;
+
+    playMusic("writing");
 
     if (input.mouseButton == SDL_BUTTON_LEFT) {
         if (typeOfBrush == 0) {
             matrix[x][y] = 255;
-            applyConvolution(matrix, x-1, y-1);
+            applyConvolution(matrix, x - 1, y - 1);
             applyConvolution(matrix, x, y - 1);
-            applyConvolution(matrix, x-1, y+1);
-            applyConvolution(matrix, x-1, y);
-            applyConvolution(matrix, x+1, y);
-            applyConvolution(matrix, x+1, y-1);
-            applyConvolution(matrix, x, y+1);
-            applyConvolution(matrix, x+1, y+1);
-        }
-        else if (typeOfBrush == 1) {
+            applyConvolution(matrix, x - 1, y + 1);
+            applyConvolution(matrix, x - 1, y);
+            applyConvolution(matrix, x + 1, y);
+            applyConvolution(matrix, x + 1, y - 1);
+            applyConvolution(matrix, x, y + 1);
+            applyConvolution(matrix, x + 1, y + 1);
+        } else if (typeOfBrush == 1) {
             applyBrush(matrix, xF, yF, 2);
         }
     }
@@ -195,11 +204,19 @@ void RunSdl(RandomForest *rf) {
         abort();
     }
 
-    Input input = { .quit = false };
-    int matrix[FEATURES_COUNT][FEATURES_COUNT] = { 0 };
-    Instance * predictionInstance = calloc(1, sizeof(Instance));
+    // Initialise la SDL2 Mixer
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) < 0) {
+        printf("ERROR - Mix_OpenAudio %s\n", Mix_GetError());
+        assert(false);
+        abort();
+    }
+    Mix_AllocateChannels(8);
+
+    Input input = {.quit = false};
+    int matrix[FEATURES_COUNT][FEATURES_COUNT] = {0};
+    Instance *predictionInstance = calloc(1, sizeof(Instance));
     AssertNew(predictionInstance);
-    predictionInstance->values = (int*)calloc(FEATURES_COUNT * FEATURES_COUNT, sizeof(int));
+    predictionInstance->values = (int *) calloc(FEATURES_COUNT * FEATURES_COUNT, sizeof(int));
     AssertNew(predictionInstance->values);
 
     // 0 = paint using sum of neighbors
@@ -212,7 +229,7 @@ void RunSdl(RandomForest *rf) {
 
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderClear(renderer);
-        
+
         /*
         When u middle mouse click, it reset the matrix to black
         */
@@ -228,7 +245,7 @@ void RunSdl(RandomForest *rf) {
         }
 
         int prediction = RandomForest_predict(rf, predictionInstance);
-        printf("predict: %d\n", prediction);
+//        printf("predict: %d\n", prediction);
 
         Text settings;
         settings.x = 600;
@@ -251,11 +268,6 @@ void RunSdl(RandomForest *rf) {
             }
         }
 
-
-        SDL_bool SDL_PointInRect(const SDL_Point *p,
-                                 const SDL_Rect *r);
-
-
         Button button;
         button.x = 560;
         button.y = 5;
@@ -265,7 +277,6 @@ void RunSdl(RandomForest *rf) {
         SDL_Point point = {input.mouseX, input.mouseY};
 
         if (SDL_PointInRect(&point, &rect) && input.isMouseClick) {
-            printf("RESET\n");
             resetCanvas(matrix);
         }
 
