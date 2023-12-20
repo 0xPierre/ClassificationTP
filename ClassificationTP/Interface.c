@@ -168,11 +168,20 @@ SDL_Rect AddButton(Button button, SDL_Renderer *renderer) {
     SDL_Rect desRect = {
             button.x,
             button.y,
-            (int) ((float) imgWidth * button.size),
-            (int) ((float) imgHeight * button.size)
+            (int)((float)imgWidth * button.size),
+            (int)((float)imgHeight * button.size)
     };
 
-    SDL_RenderCopy(renderer, SDL_CreateTextureFromSurface(renderer, tmp), NULL, &desRect);
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, tmp);
+    if (NULL == texture) {
+        fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s", SDL_GetError());
+        SDL_FreeSurface(tmp);
+        SDL_Quit();
+    }
+
+    SDL_RenderCopy(renderer, texture, NULL, &desRect);
+    SDL_FreeSurface(tmp);
+    SDL_DestroyTexture(texture);
     return desRect;
 }
 
@@ -196,12 +205,6 @@ void RunSdl(RandomForest *rf) {
         SDL_DestroyWindow(window);
         SDL_Quit();
         exit(1);
-    }
-
-    if (TTF_Init() == -1) {
-        printf("ERROR - TTF_Init %s\n", TTF_GetError());
-        assert(false);
-        abort();
     }
 
     // Initialise la SDL2 Mixer
