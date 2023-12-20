@@ -1,19 +1,33 @@
 #include "Settings.h"
 
 
+DecisionArgs Args = { GINI_NORMAL };
+
 int main(int argc, char* args[]) {
 
-    RandomForest *rf = LoadForestFromFile("../Forests/MNIST20tree_965.dfm");
+    /*RandomForest *rf = LoadForestFromFile("../Forests/MNIST20tree_965.dfm");
 
     RunSdl(rf);
-    RandomForest_destroy(rf);
+    RandomForest_destroy(rf);*/
 
-    //char train[128] = "../Datasets/MNIST_train.txt";
-    //char test[128] = "../Datasets/MNIST_test.txt";
-    //
-    //////forest
+    Args.split = GINI_NORMAL;
+    Args.treeCount = 2;
 
-    ////test_random_forest(train, test, 20);
+    Args.useFeatureBagging = false;
+    Args.featureBaggingProportion = 0.7f;
+
+    Args.instanceBaggingProportion = 0.7f;
+
+    strcpy(Args.trainPath, "../Datasets/MNIST_train.txt");
+    strcpy(Args.testPath, "../Datasets/PENDIGITS_test.txt");
+
+    StartTest();
+
+    //char train[128] = "../Datasets/PENDIGITS_train.txt";
+    //char test[128] = "../Datasets/PENDIGITS_test.txt";
+
+
+    //test_random_forest(train, test, 10);
     //test_load_forest(train, test, "../Forests/MNIST50.dfm");
 
 

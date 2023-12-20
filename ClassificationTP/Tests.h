@@ -20,3 +20,5 @@ void test_dump_forest(char pathTrain[128], char pathTest[128], int treeCount);
 void test_load_forest(char pathTrain[128], char pathTest[128], char pathForest[128]);
 
 void test_datasets_improvement(char* pathTrain, char* pathTest);
+
+void StartTest();

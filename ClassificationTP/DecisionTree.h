@@ -11,7 +11,8 @@ DecisionTreeNode* DecisionTree_create(
 	Subproblem* sp,
 	int currentDepth,
 	int maxDepth,
-	float prunningThreshold
+	float prunningThreshold,
+	bool* authorizedFeatures
 );
 
 void DecisionTree_destroy(DecisionTreeNode* decisionTree);

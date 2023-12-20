@@ -5,21 +5,18 @@ Dataset* Dataset_readFromFile(char* filename) {
 
 	if (file == NULL) {
 		printf("File not found: %s\n", filename);
-		return NULL;
+		assert(false);
 	}
 
 	Dataset* dataset = (Dataset*)malloc(sizeof(Dataset));
 
-	if (dataset == NULL) {
-		printf("Dataset Memory allocation failed\n");
-		return NULL;
-	}
+	AssertNew(dataset);
 
 	if (fscanf(file, "%d %d %d", &dataset->instanceCount, &dataset->classCount, &dataset->featureCount) != 3)
 	{
 		printf("Dataset file format error\n");
 		free(dataset);
-		return NULL;
+		assert(false);
 	}
 
 	dataset->instances = (Instance*)malloc(dataset->instanceCount * sizeof(Instance));

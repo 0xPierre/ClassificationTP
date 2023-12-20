@@ -29,7 +29,7 @@ float Split_gini(Subproblem* sp, int featureID, float threshold) {
     // Division des instances en fonction du seuil
     for (int i = 0; i < instanceCount; i++) {
         Instance* instance = sp->instances[i];
-        if (instance->values[featureID] <= threshold) {
+        if (instance->values[featureID] < threshold) {
             Subproblem_insert(leftSubproblem, instance);
         }
         else {
@@ -56,18 +56,20 @@ float Split_gini(Subproblem* sp, int featureID, float threshold) {
 }
 
 
-Split Split_compute(Subproblem* subproblem) {
+Split Split_compute_normal(Subproblem* subproblem, bool* authorizedFeatures) {
     // Valeur max
     float bestGini = FLT_MAX;
     Split bestSplit;
 
-    // On it�re sur toutes les features
+    // On itere sur toutes les features
     for (int featureId = 0; featureId < subproblem->featureCount; featureId++) {
+        // Lorsque l'on utilise le bagging, on ne prend pas en compte les features non autorises
+        if (Args.useFeatureBagging && !authorizedFeatures[featureId]) continue;
         // On cherche minj et maxj
         int minj = subproblem->instances[0]->values[featureId];
         int maxj = subproblem->instances[0]->values[featureId];
 
-        // Comme minj et maxj ont d�j� la valeur de la premi�re instance, i=1
+        // Comme minj et maxj ont deja la valeur de la premiere instance, i=1
         for (int i = 1; i < subproblem->instanceCount; i++) {
             int tmpFeature = subproblem->instances[i]->values[featureId];
             if (tmpFeature > maxj)
@@ -82,11 +84,63 @@ Split Split_compute(Subproblem* subproblem) {
 
         // Calcul le meilleur gini
         float gini = Split_gini(subproblem, featureId, threshold);
-        if (gini <= bestGini) {
+        if (gini < bestGini) {
             bestGini = gini;
             bestSplit.featureID = featureId;
             bestSplit.threshold = threshold;
         }
     }
     return bestSplit;
+}
+
+Split Split_compute_less_node(Subproblem* subproblem, bool* authorizedFeatures) {
+    // Valeur max
+    float bestGini = FLT_MAX;
+    Split bestSplit;
+
+    // On itere sur toutes les features
+    for (int featureId = 0; featureId < subproblem->featureCount; featureId++) {
+        // Lorsque l'on utilise le bagging, on ne prend pas en compte les features non autorises
+        if (Args.useFeatureBagging && !authorizedFeatures[featureId]) continue;
+        // On cherche minj et maxj
+        int minj = subproblem->instances[0]->values[featureId];
+        int maxj = subproblem->instances[0]->values[featureId];
+
+        // Comme minj et maxj ont deja la valeur de la premiere instance, i=1
+        for (int i = 1; i < subproblem->instanceCount; i++) {
+            int tmpFeature = subproblem->instances[i]->values[featureId];
+            if (tmpFeature > maxj)
+                maxj = tmpFeature;
+
+            if (tmpFeature <= minj) {
+                minj = tmpFeature;
+            }
+        }
+
+        // On cherche le meilleur seuil entre minj et maxj
+        for (int j = minj; j < maxj; j++) {
+            float threshold = (float)j;
+			// Calcul le meilleur gini
+			float gini = Split_gini(subproblem, featureId, threshold);
+            if (gini < bestGini) {
+				bestGini = gini;
+				bestSplit.featureID = featureId;
+				bestSplit.threshold = threshold;
+			}
+        }
+    }
+    return bestSplit;
+}
+
+Split Split_compute(Subproblem* subproblem, bool *authorizedFeatures) {
+    if (Args.split == GINI_NORMAL) {
+        return Split_compute_normal(subproblem, authorizedFeatures);
+    }
+    else if (Args.split == GINI_LESS_NODE) {
+        Split_compute_less_node(subproblem, authorizedFeatures);
+    }
+    else {
+        printf("Split type not recognized\n");
+        assert(false);
+    }
 }
