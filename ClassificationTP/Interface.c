@@ -3,6 +3,9 @@
 
 const int images_shade_of_white[] = {10, 50, 80, 120, 190, 220};
 int clicked = 0;
+// 0 = paint using sum of neighbors
+// 1 = paint using brush
+int typeOfBrush = 0;
 
 SDL_Window *initSDL() {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -184,6 +187,70 @@ SDL_Rect AddButton(Button button, SDL_Renderer *renderer) {
     return desRect;
 }
 
+
+SDL_Rect BtnBroshON(Button button, SDL_Renderer *renderer) {
+    int imgWidth = 174;
+    int imgHeight = 34;
+
+    SDL_Surface *tmp = NULL;
+    tmp = SDL_LoadBMP("../Assets/buttons/broshON.bmp");
+    if (NULL == tmp) {
+        fprintf(stderr, "Erreur SDL_LoadBMP : %s", SDL_GetError());
+        SDL_Quit();
+    }
+
+    SDL_Rect desRect = {
+            button.x,
+            button.y,
+            (int)((float)imgWidth * button.size),
+            (int)((float)imgHeight * button.size)
+    };
+
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, tmp);
+    if (NULL == texture) {
+        fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s", SDL_GetError());
+        SDL_FreeSurface(tmp);
+        SDL_Quit();
+    }
+
+    SDL_RenderCopy(renderer, texture, NULL, &desRect);
+    SDL_FreeSurface(tmp);
+    SDL_DestroyTexture(texture);
+    return desRect;
+}
+
+
+SDL_Rect BtnBroshOFF(Button button, SDL_Renderer *renderer) {
+    int imgWidth = 174;
+    int imgHeight = 34;
+
+    SDL_Surface *tmp = NULL;
+    tmp = SDL_LoadBMP("../Assets/buttons/broshOFF.bmp");
+    if (NULL == tmp) {
+        fprintf(stderr, "Erreur SDL_LoadBMP : %s", SDL_GetError());
+        SDL_Quit();
+    }
+
+    SDL_Rect desRect = {
+            button.x,
+            button.y,
+            (int)((float)imgWidth * button.size),
+            (int)((float)imgHeight * button.size)
+    };
+
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, tmp);
+    if (NULL == texture) {
+        fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s", SDL_GetError());
+        SDL_FreeSurface(tmp);
+        SDL_Quit();
+    }
+
+    SDL_RenderCopy(renderer, texture, NULL, &desRect);
+    SDL_FreeSurface(tmp);
+    SDL_DestroyTexture(texture);
+    return desRect;
+}
+
 void resetCanvas(int matrix[FEATURES_COUNT][FEATURES_COUNT]) {
     for (int x = 0; x < FEATURES_COUNT; x++) {
         for (int y = 0; y < FEATURES_COUNT; y++) {
@@ -221,9 +288,6 @@ void RunSdl(RandomForest *rf) {
     predictionInstance->values = (int *) calloc(FEATURES_COUNT * FEATURES_COUNT, sizeof(int));
     AssertNew(predictionInstance->values);
 
-    // 0 = paint using sum of neighbors
-    // 1 = paint using brush
-    int typeOfBrush = 0;
 
 
     while (!input.quit) {
@@ -279,6 +343,28 @@ void RunSdl(RandomForest *rf) {
 
         if (SDL_PointInRect(&point, &rect) && input.isMouseClick) {
             resetCanvas(matrix);
+        }
+
+        if (typeOfBrush) {
+            Button broshON;
+            broshON.x = 590;
+            broshON.y = 500;
+            broshON.size = 1;
+            SDL_Rect rectBroshON = BtnBroshON(broshON, renderer);
+
+            if (SDL_PointInRect(&point, &rectBroshON) && input.isMouseClick) {
+                typeOfBrush = 0;
+            }
+        } else {
+            Button broshOFF;
+            broshOFF.x = 590;
+            broshOFF.y = 500;
+            broshOFF.size = 1;
+            SDL_Rect rectBroshOFF = BtnBroshOFF(broshOFF, renderer);
+
+            if (SDL_PointInRect(&point, &rectBroshOFF) && input.isMouseClick) {
+                typeOfBrush = 1;
+            }
         }
 
 
