@@ -27,7 +27,7 @@ Dataset* DatasetCountWhite(Dataset* dataset) {
 				whiteCount++;
 			}
 		}
-		newDataset->instances[i].values[newDataset->featureCount - 1] = whiteCount;
+		newDataset->instances[i].values[newDataset->featureCount - 1] = newDataset->instances[i].classID;
 	}
 
 	return newDataset;

@@ -143,6 +143,7 @@
     <ClCompile Include="RandomForest.c" />
     <ClCompile Include="Split.c" />
     <ClCompile Include="Tests.c" />
+    <ClCompile Include="Text.c" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />

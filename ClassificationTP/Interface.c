@@ -252,11 +252,11 @@ void RunSdl(RandomForest *rf) {
         }
 
 
-        SDL_bool SDL_PointInRect(const SDL_Point *p,
-                                 const SDL_Rect *r);
+        //SDL_bool SDL_PointInRect(const SDL_Point *p,
+        //                         const SDL_Rect *r);
 
 
-        Button button;
+        /*Button button;
         button.x = 560;
         button.y = 5;
         button.size = 1;
@@ -267,7 +267,7 @@ void RunSdl(RandomForest *rf) {
         if (SDL_PointInRect(&point, &rect) && input.isMouseClick) {
             printf("RESET\n");
             resetCanvas(matrix);
-        }
+        }*/
 
 
         SDL_RenderPresent(renderer);
