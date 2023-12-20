@@ -1,10 +1,10 @@
 #include "Settings.h"
 
 Dataset* DatasetCountWhite(Dataset* dataset) {
-	Dataset* newDataset = (Dataset*)malloc(sizeof(Dataset));
+	Dataset* newDataset = (Dataset*)calloc(1, sizeof(Dataset));
 	AssertNew(newDataset);
 
-	newDataset->instances = (Instance*)malloc(dataset->instanceCount * sizeof(Instance));
+	newDataset->instances = (Instance*)calloc(dataset->instanceCount, sizeof(Instance));
 	newDataset->instanceCount = dataset->instanceCount;
 	AssertNew(newDataset->instances);
 
@@ -14,7 +14,7 @@ Dataset* DatasetCountWhite(Dataset* dataset) {
 	for (int i = 0; i < newDataset->instanceCount; i++) {
 		int whiteCount = 0;
 
-		newDataset->instances[i].values = (int*)malloc(newDataset->featureCount * sizeof(int));
+		newDataset->instances[i].values = (int*)calloc(newDataset->featureCount, sizeof(int));
 		AssertNew(newDataset->instances[i].values);
 
 		newDataset->instances[i].classID = dataset->instances[i].classID;
@@ -27,7 +27,37 @@ Dataset* DatasetCountWhite(Dataset* dataset) {
 				whiteCount++;
 			}
 		}
-		newDataset->instances[i].values[newDataset->featureCount - 1] = newDataset->instances[i].classID;
+		newDataset->instances[i].values[newDataset->featureCount - 1] = whiteCount;
+	}
+
+	return newDataset;
+}
+
+Dataset* ConcatenateTwoDatasetFeatures(Dataset* dataset1, Dataset* dataset2) {
+	Dataset* newDataset = (Dataset*)calloc(1, sizeof(Dataset));
+	AssertNew(newDataset);
+	newDataset->instances = (Instance*)calloc(dataset1->instanceCount, sizeof(Instance));
+
+	newDataset->instanceCount = dataset1->instanceCount;
+	AssertNew(newDataset->instances);
+
+	newDataset->featureCount = dataset1->featureCount + dataset2->featureCount;
+	newDataset->classCount = dataset1->classCount;
+	printf("%d %d %d\n", newDataset->instanceCount, newDataset->featureCount, newDataset->classCount);
+	
+	for (int i = 0; i < newDataset->instanceCount; i++) {
+		newDataset->instances[i].values = (int*)calloc(newDataset->featureCount, sizeof(int));
+		AssertNew(newDataset->instances[i].values);
+
+		newDataset->instances[i].classID = dataset1->instances[i].classID;
+
+		for (int j = 0; j < dataset1->featureCount; j++) {
+			newDataset->instances[i].values[j] = dataset1->instances[i].values[j];
+		}
+
+		for (int j = 0; j < dataset2->featureCount; j++) {
+			newDataset->instances[i].values[dataset1->featureCount + j] = dataset2->instances[i].values[j];
+		}
 	}
 
 	return newDataset;
@@ -95,3 +125,26 @@ void ApplyMedianFilter(Dataset* dataset) {
     }
 }
 
+
+Dataset* CopyDataset(Dataset* dataset) {
+	Dataset* newDataset = (Dataset*)calloc(1, sizeof(Dataset));
+	AssertNew(newDataset);
+
+	newDataset->instances = (Instance*)calloc(dataset->instanceCount, sizeof(Instance));
+	newDataset->instanceCount = dataset->instanceCount;
+	AssertNew(newDataset->instances);
+
+	newDataset->featureCount = dataset->featureCount;
+	newDataset->classCount = dataset->classCount;
+
+	for (int i = 0; i < newDataset->instanceCount; i++) {
+		newDataset->instances[i].values = (int*)calloc(newDataset->featureCount, sizeof(int));
+		AssertNew(newDataset->instances[i].values);
+
+		newDataset->instances[i].classID = dataset->instances[i].classID;
+		for (int j = 0; j < newDataset->featureCount; j++) {
+			newDataset->instances[i].values[j] = dataset->instances[i].values[j];
+		}
+	}
+	return newDataset;
+}
