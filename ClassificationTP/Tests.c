@@ -8,7 +8,7 @@ void test_split_compute()
     Subproblem_print(subproblem);
 
     printf("Go on\n");
-    Split split = Split_compute(subproblem);
+    Split split = Split_compute(subproblem, NULL);
     printf("Split: featureID=%d, threshold=%f\n", split.featureID, split.threshold);
 
 
@@ -23,7 +23,7 @@ void test_node_tree_count(char *pathTrain)
     Dataset* trainData = Dataset_readFromFile(pathTrain);
     Subproblem* sp = Dataset_getSubproblem(trainData);
     printf("Go on\n");
-    DecisionTreeNode* tree = DecisionTree_create(sp, 0, 30, 1.0);
+    DecisionTreeNode* tree = DecisionTree_create(sp, 0, 30, 1.0, NULL);
 
     printf("Generation d'un arbre de %d noeuds\n", Decision_nodeCount(tree));
 
@@ -43,7 +43,7 @@ void test_train_test_evaluation(char *pathTrain, char *pathTest)
     printf("Get train subproblem\n");
     Subproblem* sp = Dataset_getSubproblem(trainData);
     printf("Create decision tree\n");
-    DecisionTreeNode* tree = DecisionTree_create(sp, 0, 30, 1.0f);
+    DecisionTreeNode* tree = DecisionTree_create(sp, 0, 30, 1.0f, NULL);
     printf("Generation d'un arbre de %d noeuds\n", Decision_nodeCount(tree));
     printf("Evaluation of the tree with train\n");
     float scoreTrain = DecisionTree_evaluate(tree, trainData);
@@ -81,7 +81,7 @@ void test_random_forest(char pathTrain[128], char pathTest[128], int treeCount)
     printf("Get subproblem\n");
     Subproblem* sp = Dataset_getSubproblem(trainData);
     printf("Create random forest\n");
-    RandomForest* rf = RandomForest_create(treeCount, trainData, 30, 0.6f, 1.f);
+    RandomForest* rf = RandomForest_create(treeCount, trainData, 30, Args.instanceBaggingProportion, 1.f);
     printf("Evaluate train\n");
     float scoreTrain = RandomForest_evaluate(rf, trainData);
     printf("Evaluate test\n");
@@ -105,7 +105,7 @@ void test_memory()
     printf("Get train subproblem\n");
     Subproblem* sp = Dataset_getSubproblem(trainData);
     printf("Create decision tree\n");
-    DecisionTreeNode* tree = DecisionTree_create(sp, 0, 30, .11f);
+    DecisionTreeNode* tree = DecisionTree_create(sp, 0, 30, .11f, NULL);
     printf("Generation d'un arbre de %d noeuds\n", Decision_nodeCount(tree));
     printf("Evaluation of the tree with train\n");
     float scoreTrain = DecisionTree_evaluate(tree, trainData);
@@ -147,8 +147,8 @@ void test_dump_forest(char pathTrain[128], char pathTest[128], int treeCount)
     RandomForest* rf = RandomForest_create(treeCount, trainData, 30, 0.5f, 1.0f);
 
 
-    ForestFileDump(rf, "../Forests/MNIST3-PIERRE.dfm");
-    RandomForest* rf2 = LoadForestFromFile("../Forests/MNIST3-PIERRE.dfm");
+    ForestFileDump(rf, "./MNIST_BIGFOREST.txt");
+    RandomForest* rf2 = LoadForestFromFile("./MNIST_BIGFOREST.txt");
 
     float scoreTrain = RandomForest_evaluate(rf, trainData);
     printf("Score train : %f\n", scoreTrain);
@@ -215,7 +215,7 @@ void test_datasets_improvement(char* pathTrain, char* pathTest)
     printf("Get subproblem\n");
     Subproblem* sp2 = Dataset_getSubproblem(trainData);
     printf("Create decision tree\n");
-    DecisionTreeNode* tree2 = DecisionTree_create(sp2, 0, 30, 1.0f);
+    DecisionTreeNode* tree2 = DecisionTree_create(sp2, 0, 30, 1.0f, NULL);
     printf("Generation d'un arbre de %d noeuds\n", Decision_nodeCount(tree2));
     printf("Evaluation of the tree with train\n");
     float scoreTrain2 = DecisionTree_evaluate(tree2, trainData);
@@ -231,3 +231,18 @@ void test_datasets_improvement(char* pathTrain, char* pathTest)
 
 
 //void test_randforest_improvement()
+
+
+void StartTest() {
+    if (Args.treeCount <= 0) {
+        printf("Error : treeCount must be > 0\n");
+        assert(false);
+    }
+
+    if (Args.treeCount > 1) {
+        test_random_forest(Args.trainPath, Args.testPath, Args.treeCount);
+    }
+    else {
+        test_train_test_evaluation(Args.trainPath, Args.testPath);
+    }
+}

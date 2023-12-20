@@ -23,3 +23,8 @@ float RandomForest_evaluate(RandomForest* rf, Dataset* data);
 int RandomForest_nodeCount(RandomForest* rf);
 
 void RandomForest_destroy(RandomForest* rf);
+
+/*
+Return a list of authorized features for the bagging
+*/
+bool* Dataset_FeatureBagging(Dataset* data, float proportion);

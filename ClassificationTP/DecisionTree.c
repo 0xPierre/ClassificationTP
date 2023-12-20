@@ -5,7 +5,7 @@
 //	int countLeft = 
 //}
 
-DecisionTreeNode* DecisionTree_create(Subproblem* sp, int currentDepth, int maxDepth, float prunningThreshold)
+DecisionTreeNode* DecisionTree_create(Subproblem* sp, int currentDepth, int maxDepth, float prunningThreshold, bool *authorizedFeatures)
 {
 	// Si la profondeur est atteinte
 	if (currentDepth == maxDepth) {
@@ -32,7 +32,7 @@ DecisionTreeNode* DecisionTree_create(Subproblem* sp, int currentDepth, int maxD
 
 	float purity = (float)majority_class_count / (float)sp->instanceCount;
 
-	// Si la purete est sup�rieut � prunningThreshold
+	// Si la purete est superieut a prunningThreshold
 	if (purity >= prunningThreshold) {
 		// On retourne un noeud avec la classe majoritaire
 		return node;
@@ -43,7 +43,7 @@ DecisionTreeNode* DecisionTree_create(Subproblem* sp, int currentDepth, int maxD
 	}
 	// La purete est inf�rieure � prunningThreshold
 	// On calcule le split
-	node->split = Split_compute(sp);
+	node->split = Split_compute(sp, authorizedFeatures);
 
 	// On cr�e les sous-probl�mes
 	Subproblem* leftSubproblem = Subproblem_create(sp->instanceCount, sp->featureCount, sp->classCount);
@@ -66,8 +66,8 @@ DecisionTreeNode* DecisionTree_create(Subproblem* sp, int currentDepth, int maxD
 	}
 
 	// On cr�e les noeuds fils
-	node->left = DecisionTree_create(leftSubproblem, currentDepth + 1, maxDepth, prunningThreshold);
-	node->right = DecisionTree_create(rightSubproblem, currentDepth + 1, maxDepth, prunningThreshold);
+	node->left = DecisionTree_create(leftSubproblem, currentDepth + 1, maxDepth, prunningThreshold, authorizedFeatures);
+	node->right = DecisionTree_create(rightSubproblem, currentDepth + 1, maxDepth, prunningThreshold, authorizedFeatures);
 
 	Subproblem_destroy(leftSubproblem);
 	Subproblem_destroy(rightSubproblem);

@@ -34,7 +34,7 @@ SDL_Window* initSDL();
 /*
 This function allows to update the matrix of pixels depending on the mouse position
 */
-void updatePaintMatrix(Input input, int matrix[FEATURES_COUNT][FEATURES_COUNT]);
+void updatePaintMatrix(Input input, int matrix[FEATURES_COUNT][FEATURES_COUNT], int typeOfBrush);
 
 /*
 Used to draw a rect used as a pixel in the paint mode

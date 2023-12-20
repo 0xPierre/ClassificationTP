@@ -1,10 +1,6 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
-#define THREADS 8
-
-// POWER MODE
-// Can take : "efficient" | "performance"
-#define POWER_MODE() "performance"
+#define THREADS 4
 
 #ifdef _WIN32
 #  include "SDL.h"
@@ -38,3 +34,25 @@
 
 
 #define AssertNew(ptr) { if (ptr == NULL) { assert(false); abort(); } }
+
+
+enum SplitType {
+    GINI_NORMAL,
+    GINI_LESS_NODE,
+};
+
+typedef struct sDecisionArgs {
+    int treeCount;
+    enum SplitType split;
+
+    bool useFeatureBagging;
+    float featureBaggingProportion;
+
+    bool useInstanceBagging;
+    float instanceBaggingProportion;
+
+    char trainPath[128];
+    char testPath[128];
+} DecisionArgs;
+
+extern DecisionArgs Args;

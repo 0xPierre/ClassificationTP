@@ -7,8 +7,6 @@ typedef struct sSplit {
 
 float Split_gini(Subproblem* sp, int featureID, float threshold);
 
-Split Split_compute(Subproblem* subproblem);
-
-float Get_gini_score(Subproblem *sp);
+Split Split_compute(Subproblem* subproblem, bool* authorizedFeatures);
 
 float calculate_gini(Subproblem* subproblem);
