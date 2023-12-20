@@ -19,6 +19,8 @@ void DecisionTree_destroy(DecisionTreeNode* decisionTree);
 
 int Decision_nodeCount(DecisionTreeNode* node);
 
+double sigmoid(int x, float threshold);
+
 int DecisionTree_predict(DecisionTreeNode* tree, Instance* instance);
 
 float DecisionTree_evaluate(DecisionTreeNode* tree, Dataset* dataset);
