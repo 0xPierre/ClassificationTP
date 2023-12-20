@@ -27,3 +27,13 @@ Used to apply a median filter to the dataset
 */
 void ApplyMedianFilter(Dataset* dataset);
 
+
+/*
+Used to copy a dataset
+*/
+Dataset* CopyDataset(Dataset* dataset);
+
+/*
+Used to concatenate two datasets
+*/
+Dataset* ConcatenateTwoDatasetFeatures(Dataset* dataset1, Dataset* dataset2);

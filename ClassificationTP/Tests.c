@@ -119,12 +119,54 @@ void test_memory()
     Dataset_destroy(testData);
 }
 
+void test_datasets_concatenate(char pathTrain[128], char pathTest[128]) {
+    printf("Read train dataset\n");
+    Dataset* trainData = Dataset_readFromFile(pathTrain);
+    Dataset* trainData2 = CopyDataset(trainData);
+
+    printf("Filter train\n");
+    TransformGrayToWhite(trainData2, 20, true, 1, 255);
+    ApplyMedianFilter(trainData2);
+
+    printf("Concatenate train\n");
+    Dataset *trainDataBig = ConcatenateTwoDatasetFeatures(trainData, trainData2);
+
+    printf("Read test dataset\n");
+    Dataset* testData = Dataset_readFromFile(pathTest);
+    Dataset* testData2 = CopyDataset(testData);
+    printf("Filter test\n");
+    TransformGrayToWhite(testData2, 20, true, 1, 255);
+    ApplyMedianFilter(testData2);
+
+    Dataset *testDataBig = ConcatenateTwoDatasetFeatures(testData, testData2);
+
+
+    printf("%d %d %d %d\n", trainDataBig->featureCount, trainDataBig->instanceCount, testDataBig->featureCount, testDataBig->instanceCount);
+
+    printf("Get train subproblem\n");
+    Subproblem* sp = Dataset_getSubproblem(trainDataBig);
+    printf("Create decision tree\n");
+    DecisionTreeNode* tree = DecisionTree_create(sp, 0, 30, 1.f, NULL);
+    printf("Generation d'un arbre de %d noeuds\n", Decision_nodeCount(tree));
+    printf("Evaluation of the tree with train\n");
+    float scoreTrain = DecisionTree_evaluate(tree, trainDataBig);
+    printf("Evaluation of the tree with test\n");
+    float scoreTest = DecisionTree_evaluate(tree, testDataBig);
+    printf("train = %.3f, test = %.3f\n", scoreTrain, scoreTest);
+}
 
 void test_datasets_count_white(char pathTrain[128], char pathTest[128]) {
     printf("Read train dataset\n");
     Dataset* trainData = Dataset_readFromFile(pathTrain);
     trainData = DatasetCountWhite(trainData);
     printf("%d %d\n", trainData->featureCount, trainData->instanceCount);
+   
+ //   // printf the first instrance values
+ //   printf("Class : %d\n", trainData->instances[0].classID);
+ //   for (int i = 0; i < trainData->featureCount; i++)
+ //   {
+	//	printf("%d ", trainData->instances[0].values[i]);
+	//}
 
     printf("Read test dataset\n");
     Dataset* testData = Dataset_readFromFile(pathTest);
@@ -132,7 +174,7 @@ void test_datasets_count_white(char pathTrain[128], char pathTest[128]) {
     printf("Get train subproblem\n");
     Subproblem* sp = Dataset_getSubproblem(trainData);
     printf("Create decision tree\n");
-    DecisionTreeNode* tree = DecisionTree_create(sp, 0, 30, .11f, NULL);
+    DecisionTreeNode* tree = DecisionTree_create(sp, 0, 30, 1.f, NULL);
     printf("Generation d'un arbre de %d noeuds\n", Decision_nodeCount(tree));
     printf("Evaluation of the tree with train\n");
     float scoreTrain = DecisionTree_evaluate(tree, trainData);

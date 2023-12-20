@@ -5,11 +5,13 @@ DecisionArgs Args = { GINI_NORMAL };
 
 int main(int argc, char* args[]) {
 
-    char train[128] = "../Datasets/PENDIGITS_train.txt";
-    char test[128] = "../Datasets/PENDIGITS_test.txt";
-    test_datasets_count_white(train, test);
-    /*RandomForest *rf = LoadForestFromFile("../Forests/MNIST20tree_965.dfm");
-    RunSdl(rf);*/
+    char train[128] = "../Datasets/MNIST_train.txt";
+    char test[128] = "../Datasets/MNIST_test.txt";
+
+    test_datasets_concatenate(train, test);
+    //test_datasets_count_white(train, test);
+    //RandomForest *rf = LoadForestFromFile("../Forests/MNIST20tree_965.dfm");
+    //RunSdl(rf);
 //
    /* 
     RandomForest_destroy(rf);*/
