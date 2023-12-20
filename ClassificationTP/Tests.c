@@ -120,6 +120,33 @@ void test_memory()
 }
 
 
+void test_datasets_count_white(char pathTrain[128], char pathTest[128]) {
+    printf("Read train dataset\n");
+    Dataset* trainData = Dataset_readFromFile(pathTrain);
+    trainData = DatasetCountWhite(trainData);
+    printf("%d %d\n", trainData->featureCount, trainData->instanceCount);
+
+    printf("Read test dataset\n");
+    Dataset* testData = Dataset_readFromFile(pathTest);
+    testData = DatasetCountWhite(testData);
+    printf("Get train subproblem\n");
+    Subproblem* sp = Dataset_getSubproblem(trainData);
+    printf("Create decision tree\n");
+    DecisionTreeNode* tree = DecisionTree_create(sp, 0, 30, .11f, NULL);
+    printf("Generation d'un arbre de %d noeuds\n", Decision_nodeCount(tree));
+    printf("Evaluation of the tree with train\n");
+    float scoreTrain = DecisionTree_evaluate(tree, trainData);
+    printf("Evaluation of the tree with test\n");
+    float scoreTest = DecisionTree_evaluate(tree, testData);
+    printf("train = %.3f, test = %.3f\n", scoreTrain, scoreTest);
+
+    Subproblem_destroy(sp);
+    DecisionTree_destroy(tree);
+    Dataset_destroy(trainData);
+    Dataset_destroy(testData);
+}
+
+
 void vpl_test(char pathTrain[128], char pathTest[128])
 {
     //Dataset* trainData = Dataset_readFromFile(pathTrain);

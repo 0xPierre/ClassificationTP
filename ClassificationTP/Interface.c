@@ -121,7 +121,6 @@ void applyBrush(int matrix[FEATURES_COUNT][FEATURES_COUNT], float x, float y, in
 
 void updatePaintMatrix(Input input, int matrix[FEATURES_COUNT][FEATURES_COUNT], int typeOfBrush) {
     if (!clicked) {
-        printf("coucou %d\n", clicked);
         stopMusics();
         return;
     }
@@ -248,7 +247,6 @@ void RunSdl(RandomForest *rf) {
         }
 
         int prediction = RandomForest_predict(rf, predictionInstance);
-//        printf("predict: %d\n", prediction);
 
         Text settings;
         settings.x = 600;

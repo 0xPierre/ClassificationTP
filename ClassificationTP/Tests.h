@@ -22,3 +22,5 @@ void test_load_forest(char pathTrain[128], char pathTest[128], char pathForest[1
 void test_datasets_improvement(char* pathTrain, char* pathTest);
 
 void StartTest();
+
+void test_datasets_count_white(char pathTrain[128], char pathTest[128]);
