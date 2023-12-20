@@ -1,11 +1,25 @@
 #include "Settings.h"
 
 
-float Split_gini(Subproblem *sp, int featureID, float threshold) {
+
+float calculate_gini(Subproblem* subproblem) {
+    float instanceCount = (float)subproblem->instanceCount > 0 ? (float)subproblem->instanceCount : 1.0f;
+    float gini = 1.0f;
+    // Calcule le gini
+    for (int i = 0; i < subproblem->classCount; i++) {
+        float p = (float)subproblem->classes[i].instanceCount / instanceCount;
+        gini -= p * p;
+    }
+
+    return gini;
+}
+
+float Split_gini(Subproblem* sp, int featureID, float threshold) {
     int instanceCount = sp->instanceCount;
 
-    Subproblem *leftSubproblem = Subproblem_create(instanceCount, sp->featureCount, sp->classCount);
-    Subproblem *rightSubproblem = Subproblem_create(instanceCount, sp->featureCount, sp->classCount);
+    // Cr�ation des subproblemes droite gauche
+    Subproblem* leftSubproblem = Subproblem_create(instanceCount, sp->featureCount, sp->classCount);
+    Subproblem* rightSubproblem = Subproblem_create(instanceCount, sp->featureCount, sp->classCount);
 
     if (leftSubproblem == NULL || rightSubproblem == NULL) {
         printf("Subproblem Memory allocation failed - left or right Subproblem\n");
@@ -14,29 +28,26 @@ float Split_gini(Subproblem *sp, int featureID, float threshold) {
 
     // Division des instances en fonction du seuil
     for (int i = 0; i < instanceCount; i++) {
-        Instance *instance = sp->instances[i];
-
+        Instance* instance = sp->instances[i];
         if (instance->values[featureID] <= threshold) {
-
-            if (strcmp(POWER_MODE(), "efficient") == 0 && (instance->values[featureID] == threshold)) {
-                Subproblem_insert(rightSubproblem, instance);
-            } else {
-                Subproblem_insert(leftSubproblem, instance);
-            }
-        } else {
+            Subproblem_insert(leftSubproblem, instance);
+        }
+        else {
             Subproblem_insert(rightSubproblem, instance);
         }
     }
 
-    // Récupération du Gini pour chaque sous problème
+    // R�cup�ration du Gini pour chaque sous probl�me
     float giniLeft = calculate_gini(leftSubproblem);
     float giniRight = calculate_gini(rightSubproblem);
 
-    // On pondère le gini en fonction du total
+   /* if (giniLeft == 0) giniLeft = 0.0001f;
+    if (giniRight -) giniRight = 0.0001f;*/
+
     float gini =
-            ((float) leftSubproblem->instanceCount / instanceCount) * giniLeft
-            +
-            ((float) rightSubproblem->instanceCount / instanceCount) * giniRight;
+        ((float)leftSubproblem->instanceCount / instanceCount) * giniLeft
+        +
+        ((float)rightSubproblem->instanceCount / instanceCount) * giniRight;
 
     Subproblem_destroy(leftSubproblem);
     Subproblem_destroy(rightSubproblem);
@@ -44,59 +55,38 @@ float Split_gini(Subproblem *sp, int featureID, float threshold) {
     return gini;
 }
 
-float calculate_gini(Subproblem *subproblem) {
-    float gini = 1.0f;
-    // Calcule le gini
-    for (int i = 0; i < subproblem->classCount; i++) {
-        float p = (float) subproblem->classes[i].instanceCount / (float) subproblem->instanceCount;
-        gini -= p * p;
-    }
 
-    return gini;
-}
+Split Split_compute(Subproblem* subproblem) {
+    // Valeur max
+    float bestGini = FLT_MAX;
+    Split bestSplit;
 
+    // On it�re sur toutes les features
+    for (int featureId = 0; featureId < subproblem->featureCount; featureId++) {
+        // On cherche minj et maxj
+        int minj = subproblem->instances[0]->values[featureId];
+        int maxj = subproblem->instances[0]->values[featureId];
 
-Split Split_compute(Subproblem *subproblem) {
-    float bestGini = INFINITY;
-    Split split;
+        // Comme minj et maxj ont d�j� la valeur de la premi�re instance, i=1
+        for (int i = 1; i < subproblem->instanceCount; i++) {
+            int tmpFeature = subproblem->instances[i]->values[featureId];
+            if (tmpFeature > maxj)
+                maxj = tmpFeature;
 
-    for (int i = 0; i < subproblem->featureCount; ++i) {
-        int min = (int) INFINITY;
-        int max = 0;
-
-        for (int j = 0; j < subproblem->instanceCount; ++j) {
-            int feature = subproblem->instances[j]->values[i];
-            if (feature > max) {
-                max = feature;
-            }
-            if (feature < min) {
-                min = feature;
+            if (tmpFeature <= minj) {
+                minj = tmpFeature;
             }
         }
 
-        if (strcmp(POWER_MODE(), "efficient") == 0) {
-            for (int y = min; y <= max; ++y) {
-                // Calcul le meilleur gini
-                float gini = Split_gini(subproblem, i, (float) y);
+        float threshold = ((float)maxj + (float)minj) / 2;
 
-                if (gini < bestGini) {
-                    bestGini = gini;
-                    split.featureID = i;
-                    split.threshold = (float) y;
-                }
-            }
-        } else {
-            float threshold = ((float) min + (float) max) / 2;
-
-            float gini = Split_gini(subproblem, i, threshold);
-
-            if (gini < bestGini) {
-                bestGini = gini;
-                split.threshold = threshold;
-                split.featureID = i;
-            }
+        // Calcul le meilleur gini
+        float gini = Split_gini(subproblem, featureId, threshold);
+        if (gini <= bestGini) {
+            bestGini = gini;
+            bestSplit.featureID = featureId;
+            bestSplit.threshold = threshold;
         }
     }
-
-    return split;
+    return bestSplit;
 }
