@@ -23,8 +23,8 @@ void SearchHyperParametersOfRandomForest() {
 
 	float minThreshold = 0.99f;
 	float maxThreshold = 1.f;
-	float minFeaturesBagging = 0.15f;
-	float maxFeaturesBagging = 0.25f;
+	float minFeaturesBagging = 0.01f;
+	float maxFeaturesBagging = 1.f;
 	float minInstancesBagging = 1.f;
 	float maxInstancesBagging = 1.f;
 
@@ -71,7 +71,7 @@ void SearchHyperParametersOfRandomForest() {
 	printf("Best instances bagging: %f\n", bestInstancesBagging);
 	printf("Node count %d\n", RandomForest_nodeCount(bestRandomForest));
 
-	ForestFileDump(bestRandomForest, "MNIST_HYPERPARAMETERS.txt");
+	ForestFileDump(bestRandomForest, "MNIST_HYPERPARAMETERS_FILTERED_ALL_FEATURE_BAGGING.txt");
 
 	Dataset_destroy(trainData);
 	Dataset_destroy(testData);
