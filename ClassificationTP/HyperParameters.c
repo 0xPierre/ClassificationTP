@@ -22,19 +22,22 @@ void SearchHyperParametersOfRandomForest() {
 	RandomForest *bestRandomForest = NULL;
 
 	float minThreshold = 0.99f;
-	float minFeaturesBagging = 0.1f;
+	float maxThreshold = 1.f;
+	float minFeaturesBagging = 0.25f;
+	float maxFeaturesBagging = 0.35f;
 	float minInstancesBagging = 1.f;
+	float maxInstancesBagging = 1.f;
 
 	printf("Starting search\n");
 	// Search for best threshold
-	for (float threshold = minThreshold; threshold <= 1.f; threshold += 0.01f) {
+	for (float threshold = minThreshold; threshold <= maxThreshold; threshold += 0.01f) {
 
 		// Search for best features bagging
-		for (float featuresBagging = minFeaturesBagging; featuresBagging <= 1.f; featuresBagging += 0.1f) {
+		for (float featuresBagging = minFeaturesBagging; featuresBagging <= maxFeaturesBagging; featuresBagging += 0.1f) {
 			Args.featureBaggingProportion = featuresBagging;
 
 			// Search for the best instances bagging
-			for (float instancesBagging = minInstancesBagging; instancesBagging <= 1.f; instancesBagging += 0.01f) {
+			for (float instancesBagging = minInstancesBagging; instancesBagging <= maxInstancesBagging; instancesBagging += 0.01f) {
 				Args.instanceBaggingProportion = instancesBagging;
 				// Remise à zéro des randoms
 				srand(0);
