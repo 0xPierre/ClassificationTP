@@ -5,9 +5,9 @@ DecisionArgs Args = { GINI_NORMAL };
 
 int main(int argc, char* args[]) {
     
-    /*strcpy(Args.pathForest, "../Datasets/MNIST_t20_9485.txt");
-    strcpy(Args.trainPath, "../Datasets/MNIST_train.txt");
-    strcpy(Args.testPath, "../Datasets/MNIST_test.txt");
+    /*strcpy(Args.pathForest, "../Forests/MNIST_FILTERED_HYPERPARAMETERS_98_65.bfm");
+    strcpy(Args.trainPath, "../Datasets/MNIST_train_filtered.txt");
+    strcpy(Args.testPath, "../Datasets/MNIST_test_filtered.txt");
     StartTest();*/
     strcpy(Args.trainPath, "../Datasets/MNIST_train_filtered.txt");
     strcpy(Args.testPath, "../Datasets/MNIST_test_filtered.txt");
