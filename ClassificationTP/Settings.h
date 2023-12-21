@@ -1,6 +1,6 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
-#define THREADS 16
+#define THREADS 4
 
 #ifdef _WIN32
 #  include "SDL.h"
@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <float.h>
 #include "Dataset.h"
+#include "time.h"
 #include "Split.h"
 #include "DecisionTree.h"
 #include "RandomForest.h"
@@ -48,6 +49,7 @@ typedef struct sDecisionArgs {
     int maxDepth;
     enum SplitType split;
 
+    bool useLocalFeatureBagging;
     bool useFeatureBagging;
     float featureBaggingProportion;
 
@@ -61,6 +63,16 @@ typedef struct sDecisionArgs {
     int prunningThreshold;
 
     char pathForest[128];
+
+    // List of fitlers to apply
+    // 0 = Gray To White
+    // 1 = Median
+    char filters[128];
+    bool filtersDatasets;
+
+    bool saveForest;
+    char pathSaveForest[128];
+
 } DecisionArgs;
 
 extern DecisionArgs Args;

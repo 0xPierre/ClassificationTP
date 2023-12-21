@@ -87,6 +87,7 @@ void test_random_forest(char pathTrain[128], char pathTest[128], int treeCount)
     printf("Evaluate test\n");
     float scoreTest = RandomForest_evaluate(rf, testData);
     printf("train = %.3f, test = %.3f\n", scoreTrain, scoreTest);
+    printf("NC: %d\n", RandomForest_nodeCount(rf));
 
     RandomForest_destroy(rf);
     Dataset_destroy(trainData);
@@ -286,39 +287,43 @@ void test_load_forest(char pathTrain[128], char pathTest[128], char pathForest[1
 
 
 
-void test_datasets_improvement(char* pathTrain, char* pathTest)
+void test_datasets_improvement()
 {
     printf("Read train dataset\n");
-    Dataset* trainData = Dataset_readFromFile(pathTrain);
+    Dataset* trainData = Dataset_readFromFile(Args.trainPath);
     printf("Update train\n");
 
     printf("Read test dataset\n");
     printf("Update train\n");
-    Dataset* testData = Dataset_readFromFile(pathTest);
+    Dataset* testData = Dataset_readFromFile(Args.testPath);
 
-    /*printf("Get subproblem\n");
+    printf("Get subproblem\n");
     Subproblem* sp = Dataset_getSubproblem(trainData);
     printf("Create decision tree\n");
-    DecisionTreeNode* tree = DecisionTree_create(sp, 0, 30, 1.0f);
+    DecisionTreeNode* tree = DecisionTree_create(sp, 0, 30, 1.0f, NULL);
     printf("Generation d'un arbre de %d noeuds\n", Decision_nodeCount(tree));
     printf("Evaluation of the tree with train\n");
     float scoreTrain = DecisionTree_evaluate(tree, trainData);
     printf("Evaluation of the tree with test\n");
     float scoreTest = DecisionTree_evaluate(tree, testData);
-    printf("train = %.3f, test = %.3f\n", scoreTrain, scoreTest);*/
+    printf("train = %.3f, test = %.3f\n", scoreTrain, scoreTest);
 
-    //printf("20\n");
-
-    // print les features de l'instance 0
     TransformGrayToWhite(trainData, 20, true, 1, 255);
     TransformGrayToWhite(testData, 20, true, 1, 255);
 
     ApplyMedianFilter(trainData);
     ApplyMedianFilter(testData);
 
-    /*Dataset_writeToFile(trainData, "../Datasets/MNIST_train_filtered.txt");
-    Dataset_writeToFile(testData, "../Datasets/MNIST_test_filtered.txt");
-    return;*/
+    //ApplyMedianFilter(trainData);
+    //ApplyMedianFilter(testData);
+
+    //ApplyMedianFilter(trainData);
+    //ApplyMedianFilter(testData);
+
+
+    Dataset_writeToFile(trainData, "../Datasets/MNIST_train_filtered_2.txt");
+    Dataset_writeToFile(testData, "../Datasets/MNIST_test_filtered_2.txt");
+    //return;
 
 
     printf("Get subproblem\n");
@@ -346,20 +351,56 @@ void StartTest() {
     /*
     Test load forest
     */
-    if (Args.pathForest != NULL) {
-        test_load_forest(Args.trainPath, Args.testPath, Args.pathForest);
-		return;
+    RandomForest* rf = NULL;
+    
+    if (!Args.isSilent) printf("Read train Dataset\n");
+    Dataset* trainData = Dataset_readFromFile(Args.trainPath);
+    if (!Args.isSilent) printf("Read test Dataset\n");
+    Dataset* testData = Dataset_readFromFile(Args.testPath);
+
+    if (Args.filtersDatasets) {
+        for (int i = 0; i < strlen(Args.filters); i++) {
+            printf("Filter %d | type %c\n", i, Args.filters[i]);
+            if (Args.filters[i] == '0') {
+                TransformGrayToWhite(trainData, 20, true, 1, 255);
+                TransformGrayToWhite(testData, 20, true, 1, 255);
+            }
+            else if (Args.filters[i] == '1') {
+				ApplyMedianFilter(trainData);
+				ApplyMedianFilter(testData);
+			}
+        }
     }
 
-    if (Args.treeCount <= 0) {
-        printf("Error : treeCount must be > 0\n");
-        assert(false);
-    }
-
-    if (Args.treeCount > 1) {
-        test_random_forest(Args.trainPath, Args.testPath, Args.treeCount);
+    if (strcmp(Args.pathForest, "") == 1) {
+        rf = LoadForestFromFile(Args.pathForest);
     }
     else {
-        test_train_test_evaluation(Args.trainPath, Args.testPath);
+        if (Args.treeCount == 1) {
+            test_train_test_evaluation(Args.trainPath, Args.testPath);
+            return;
+		}
+        else {
+            rf = RandomForest_create(Args.treeCount, trainData, 30, 0.5f, 1.0f);
+        }
     }
+
+    // Only forest here
+    // Check train
+
+    if (!Args.isSilent) printf("Evaluation of the forest with train\n");
+    float trainScore = RandomForest_evaluate(rf, trainData);
+
+    if (!Args.isSilent) printf("Evaluation of the forest with test\n");
+    float testScore = RandomForest_evaluate(rf, testData);
+
+    printf("Numbers of node: %d\n", RandomForest_nodeCount(rf));
+    printf("Score | Train: %.3f, Test: %.3f\n", trainScore, testScore);
+
+
+    if (Args.saveForest) {
+        ForestFileDump(rf, Args.pathSaveForest);
+    }
+
+
 }
