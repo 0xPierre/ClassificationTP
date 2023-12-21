@@ -5,7 +5,7 @@
 #include "Settings.h"
 
 void playMusic(char title[]) {
-    Mix_ResumeMusic();
+   /* Mix_ResumeMusic();
     if (Mix_PlayingMusic()) {
         return;
     }
@@ -16,15 +16,15 @@ void playMusic(char title[]) {
 
     if (!strcmp(filePath, "")) {
         return;
-    }
+    }*/
 
-    Mix_Music * music = Mix_LoadMUS(filePath);
-    Mix_PlayMusic(music, 0);
+    //Mix_Music * music = Mix_LoadMUS(filePath);
+    //Mix_PlayMusic(music, 0);
 }
 
 void stopMusics() {
-    if (!Mix_PlayingMusic()) {
+ /*   if (!Mix_PlayingMusic()) {
         return;
     }
-    Mix_HaltMusic();
+    Mix_HaltMusic();*/
 }

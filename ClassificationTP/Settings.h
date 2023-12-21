@@ -59,6 +59,8 @@ typedef struct sDecisionArgs {
 
     bool isSilent;
     int prunningThreshold;
+
+    char* pathForest;
 } DecisionArgs;
 
 extern DecisionArgs Args;

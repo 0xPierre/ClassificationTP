@@ -274,12 +274,12 @@ void RunSdl(RandomForest *rf) {
     }
 
     // Initialise la SDL2 Mixer
-    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) < 0) {
+    /*if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) < 0) {
         printf("ERROR - Mix_OpenAudio %s\n", Mix_GetError());
         assert(false);
         abort();
-    }
-    Mix_AllocateChannels(8);
+    }*/
+    //Mix_AllocateChannels(8);
 
     Input input = {.quit = false};
     int matrix[FEATURES_COUNT][FEATURES_COUNT] = {0};

@@ -5,8 +5,9 @@ DecisionArgs Args = { GINI_NORMAL };
 
 int main(int argc, char* args[]) {
     
-    strcpy(Args.trainPath, "../Datasets/MNIST_train.txt");
-    strcpy(Args.testPath, "../Datasets/MNIST_test.txt");
+    //strcpy(Args.)
+    strcpy(Args.trainPath, "../Datasets/MNIST_train_filtered.txt");
+    strcpy(Args.testPath, "../Datasets/MNIST_test_filtered.txt");
     Args.isSilent = true;
     Args.treeCount = 30;
     Args.maxDepth = 25;

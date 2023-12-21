@@ -30,11 +30,11 @@ void SearchHyperParametersOfRandomForest() {
 	for (float threshold = minThreshold; threshold <= 1.f; threshold += 0.01f) {
 
 		// Search for best features bagging
-		for (float featuresBagging = minFeaturesBagging; featuresBagging <= 0.05f; featuresBagging += 0.01f) {
+		for (float featuresBagging = minFeaturesBagging; featuresBagging <= 0.20f; featuresBagging += 0.01f) {
 			Args.featureBaggingProportion = featuresBagging;
 
 			// Search for the best instances bagging
-			for (float instancesBagging = minInstancesBagging; instancesBagging <= 0.13f; instancesBagging += 0.01f) {
+			for (float instancesBagging = minInstancesBagging; instancesBagging <= 0.25f; instancesBagging += 0.01f) {
 				Args.instanceBaggingProportion = instancesBagging;
 				// Remise à zéro des randoms
 				srand(0);
