@@ -23,8 +23,8 @@ void SearchHyperParametersOfRandomForest() {
 
 	float minThreshold = 0.99f;
 	float maxThreshold = 0.99f;
-	float minFeaturesBagging = 0.05f;
-	float maxFeaturesBagging = 0.45f;
+	float minFeaturesBagging = 0.01f;
+	float maxFeaturesBagging = 0.1f;
 	float minInstancesBagging = 1.f;
 	float maxInstancesBagging = 1.f;
 
