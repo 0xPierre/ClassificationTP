@@ -22,14 +22,31 @@ DecisionArgs Args = {
 };
 
 int main(int argc, char* args[]) {
+   // printf("Dataset\n");
+   // Dataset *trainData = Dataset_readFromFile("../Datasets/MNIST_train.txt");
+   // Dataset *testData = Dataset_readFromFile("../Datasets/MNIST_test.txt");
+
+   // //TransformGrayToWhite(trainData, 20, true, 1, 255);
+   // //TransformGrayToWhite(testData, 20, true, 1, 255);
+
+   // //ApplyMedianFilter(trainData);
+   // //ApplyMedianFilter(testData);
+
+
+   //Dataset_writeToFile(trainData, "../Datasets/MNIST_train_filtered_4.txt");
+   //Dataset_writeToFile(testData, "../Datasets/MNIST_test_filtered_4.txt");
+   //printf("Write ds\n");
+    RandomForest *rf = LoadForestFromFile("../Forests/FOREST_TRAINED_FOR_SDL.dfm");
+    RunSdl(rf);
+    return;
 
     time_t start = time(NULL);
 
-    strcpy(Args.trainPath, "../Datasets/MNIST_train.txt");
-    strcpy(Args.testPath, "../Datasets/MNIST_test.txt");
+    strcpy(Args.trainPath, "../Datasets/MNIST_train_filtered_4.txt");
+    strcpy(Args.testPath, "../Datasets/MNIST_test_filtered_4.txt");
 
-    //strcpy(Args.pathForest, "../Forests/MNIST_FILTERED_HYPERPARAMETERS_98_65.bfm");
-    Args.filtersDatasets = true;
+    //strcpy(Args.pathForest, "../Forests/MNIST_FILTERED_HYPERPARAMETERS_98_65.dfm");
+    Args.filtersDatasets = false;
     Args.filters[0] = '0';
     Args.filters[1] = '1';
     // Add a second 1 filter improve by 0.03%

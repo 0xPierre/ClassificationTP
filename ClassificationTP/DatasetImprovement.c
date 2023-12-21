@@ -105,8 +105,8 @@ int calculate_median(int* matrix, int size) {
 void ApplyMedianFilter(Dataset* dataset) {
     for (int i = 0; i < dataset->instanceCount; ++i) {
         for (int j = 0; j < dataset->featureCount; ++j) {
-            // pixelValues = matrix of 9 pixels, representing the 3x3 matrix
             int* pixelValues = (int *)calloc(9,sizeof(int));
+			AssertNew(pixelValues);
             int index = 0;
             for (int x = -1; x <= 1; ++x) {
                 for (int y = -1; y <= 1; ++y) {
@@ -123,6 +123,29 @@ void ApplyMedianFilter(Dataset* dataset) {
             free(pixelValues);
         }
     }
+}
+
+void ApplyMedianFilterForOneInstance(Instance* instance, int featureCount) {
+	for (int j = 0; j < featureCount; ++j) {
+		int* pixelValues = (int*)calloc(9, sizeof(int));
+		AssertNew(pixelValues);
+		int index = 0;
+		for (int x = -1; x <= 1; ++x) {
+			for (int y = -1; y <= 1; ++y) {
+				int rIndex = x;
+				int cIndex = y;
+				if (rIndex >= 0 && rIndex < 1 &&
+					cIndex >= 0 && cIndex < featureCount) {
+					pixelValues[index++] = instance->values[cIndex];
+				}
+			}
+		}
+		instance->values[j] = calculate_median(pixelValues, index);
+		if (instance->values[j] == 0) {
+			instance->values[j] == 1;
+		}
+		free(pixelValues);
+	}
 }
 
 
