@@ -51,7 +51,7 @@ void SearchHyperParametersOfRandomForest() {
 					bestThreshold = threshold;
 					bestFeaturesBagging = featuresBagging;
 					bestInstancesBagging = instancesBagging;
-					printf("Best score: %.2f | %.2f %.2f %.2f\n", score, threshold, featuresBagging, instancesBagging);
+					printf("Best score: %.4f | %.2f %.2f %.2f\n", score, threshold, featuresBagging, instancesBagging);
 				}
 				else {
 					free(rf);
