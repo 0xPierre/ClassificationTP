@@ -381,7 +381,7 @@ void StartTest() {
             return;
 		}
         else {
-            rf = RandomForest_create(Args.treeCount, trainData, 30, 0.5f, 1.0f);
+            rf = RandomForest_create(Args.treeCount, trainData, 30, 0.5, 1.0f);
         }
     }
 
