@@ -33,7 +33,7 @@ void SearchHyperParametersOfRandomForest() {
 	for (float threshold = minThreshold; threshold <= maxThreshold; threshold += 0.01f) {
 
 		// Search for best features bagging
-		for (float featuresBagging = minFeaturesBagging; featuresBagging <= maxFeaturesBagging; featuresBagging += 0.1f) {
+		for (float featuresBagging = minFeaturesBagging; featuresBagging <= maxFeaturesBagging; featuresBagging += 0.01f) {
 			Args.featureBaggingProportion = featuresBagging;
 
 			// Search for the best instances bagging
