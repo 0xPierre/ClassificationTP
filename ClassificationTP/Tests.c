@@ -343,6 +343,14 @@ void test_datasets_improvement(char* pathTrain, char* pathTest)
 
 
 void StartTest() {
+    /*
+    Test load forest
+    */
+    if (Args.pathForest != NULL) {
+        test_load_forest(Args.trainPath, Args.testPath, Args.pathForest);
+		return;
+    }
+
     if (Args.treeCount <= 0) {
         printf("Error : treeCount must be > 0\n");
         assert(false);

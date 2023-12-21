@@ -1,6 +1,6 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
-#define THREADS 4
+#define THREADS 16
 
 #ifdef _WIN32
 #  include "SDL.h"
@@ -60,7 +60,7 @@ typedef struct sDecisionArgs {
     bool isSilent;
     int prunningThreshold;
 
-    char* pathForest;
+    char pathForest[128];
 } DecisionArgs;
 
 extern DecisionArgs Args;
