@@ -17,16 +17,16 @@ Subproblem *Dataset_bagging(Dataset *data, float proportion) {
 }
 
 
-bool* Dataset_FeatureBagging(Dataset* data, float proportion) {
-    bool *authorizedFeatures = (bool *)calloc(data->featureCount, sizeof(bool));
+bool *Dataset_FeatureBagging(Dataset *data, float proportion) {
+    bool *authorizedFeatures = (bool *) calloc(data->featureCount, sizeof(bool));
     AssertNew(authorizedFeatures);
 
-    int authorizedFeaturesCount = (int)(data->featureCount * proportion);
+    int authorizedFeaturesCount = (int) (data->featureCount * proportion);
 
     for (int i = 0; i < authorizedFeaturesCount; i++) {
-		int randomIndex = ((rand() ^ (rand() << 15)) & 0x7FFFFFFF) % data->featureCount;
-		authorizedFeatures[randomIndex] = true;
-	}
+        int randomIndex = ((rand() ^ (rand() << 15)) & 0x7FFFFFFF) % data->featureCount;
+        authorizedFeatures[randomIndex] = true;
+    }
 
     return authorizedFeatures;
 }
@@ -61,14 +61,15 @@ RandomForest *RandomForest_create(
         for (int i = 0; i < numberOfTrees; i++) {
             printf("Creating tree %d\n", i);
             Subproblem *subproblem = Dataset_bagging(data, baggingProportion);
-            
+
             // On récupère les features autorisées pour le bagging
-            bool* authorizedFeatures = NULL;
+            bool *authorizedFeatures = NULL;
             if (Args.useFeatureBagging) {
                 authorizedFeatures = Dataset_FeatureBagging(data, Args.featureBaggingProportion);
             }
 
-            randomForest->trees[i] = DecisionTree_create(subproblem, 0, maxDepth, prunningThreshold, authorizedFeatures);
+            randomForest->trees[i] = DecisionTree_create(subproblem, 0, maxDepth, prunningThreshold,
+                                                         authorizedFeatures);
             // On supprime le subproblem généré au dessus
             Subproblem_destroy(subproblem);
 #pragma omp atomic
@@ -88,8 +89,20 @@ int RandomForest_predict(RandomForest *rf, Instance *instance) {
     // Pr�diction pour chacun des arbres
     for (int i = 0; i < rf->treeCount; i++) {
         // La pr�diction renvoie la class
-        int vote = DecisionTree_predict(rf->trees[i], instance);
+        float *tab = calloc(rf->classCount, sizeof(float));
+        DecisionTree_predict(rf->trees[i], instance, tab, 1);
+
+        float max = 0;
+        int vote = 0;
+        for (int j = 0; j < rf->classCount; ++j) {
+            if (tab[j] > max) {
+                max = tab[j];
+                vote = j;
+            }
+        }
+
         votes[vote]++;
+        free(tab);
     }
 
     int maxVote = 0;
