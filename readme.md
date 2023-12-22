@@ -48,5 +48,5 @@ If you have found a bug, feel free to open a new Issue on Gitlab.
 
 ## Licence 📜
 
-The app core is under GPLv3 but be careful the vegetables Images and vegetables data are limited are restricted to
+The app core is under GPLv3 but be careful Images and sounds data are limited are restricted to
 copyright.
