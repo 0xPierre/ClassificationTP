@@ -39,7 +39,7 @@ DecisionArgs Args = {
 // | FORET PENDIGITS
 // |
 // Permet de tester la création d'une forêt d'arbre de décision, avec le calcul du gini (minj+maxj)/2.
-#define TEST_PENDIGITS_FOREST true
+#define TEST_PENDIGITS_FOREST false
 #define TEST_PENDIGITS_FOREST_TREE_COUNT 40
 #define TEST_PENDIGITS_FEATURES_BAGGING true
 // Le bagging local est beaucoup plus rapide que le bagging normal, mais un tout petit peu moins précis.
@@ -50,6 +50,12 @@ DecisionArgs Args = {
 // |
 // | FORET MNIST
 // |
+
+// |
+// | Run SDL
+// |
+#define TEST_SDL true
+#define TEST_SDL_FOREST_PATH "../Forests/FOREST_TRAINED_FOR_SDL.dfm"
 
 #if TEST_SIMPLE_PENDIGITS
 int main(int argc, char* args[]) {
@@ -79,6 +85,14 @@ int main(int argc, char* args[]) {
 	return 0;
 }
 #endif 
+
+#if TEST_SDL
+int main(int argc, char* argv[]) {
+    //strcpy(Args.pathForest, TEST_SDL_FOREST_PATH);
+    RandomForest* rf = LoadForestFromFile(TEST_SDL_FOREST_PATH);
+    RunSdl(rf);
+}
+#endif
 
 //int main(int argc, char* args[]) {
 //   // printf("Dataset\n");
