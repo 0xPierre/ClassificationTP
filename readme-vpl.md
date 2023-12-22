@@ -61,10 +61,13 @@ Creating trees can take a while even with multithreading. That why we added the 
 in a file. And when you need the trained tree, you have just to load it again !!
 Magic no ?
 
-##### Add bagging (Intances and Features)
+##### Add bagging (Intances)
 The idea behind this idea is to have efficient tree able to quickly sort instances.
 For this we need trees with uniq split characteristics and bagging allow to do that.
 Instead, to take all the instances and all the features we take randomly few of them to have bigger diversity and get better results.
+
+##### Add bagging (Features)
+Same as above but for features.
 
 ##### Dataset editing (colors filters, copy...)
 Improve dataset quality by removing parasite pixels and more...
