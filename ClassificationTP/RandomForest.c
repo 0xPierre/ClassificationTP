@@ -87,39 +87,65 @@ int RandomForest_predict(RandomForest *rf, Instance *instance) {
         printf("RandomForest Memory allocation failed - votes\n");
         return -1;
     }
-    // Pr�diction pour chacun des arbres
-    for (int i = 0; i < rf->treeCount; i++) {
-        // La pr�diction renvoie la class
-        float *tab = calloc(rf->classCount, sizeof(float));
-        DecisionTree_predict(rf->trees[i], instance, tab, 1);
 
-        float max = 0;
-        int vote = 0;
-        for (int j = 0; j < rf->classCount; ++j) {
-            if (tab[j] > max) {
-                max = tab[j];
-                vote = j;
+    if (Args.enableSigmoid) {
+        // Pr�diction pour chacun des arbres
+        for (int i = 0; i < rf->treeCount; i++) {
+            // La pr�diction renvoie la class
+            float *tab = calloc(rf->classCount, sizeof(float));
+            DecisionTree_predict(rf->trees[i], instance, tab, 1);
+
+            float max = 0;
+            int vote = 0;
+            for (int j = 0; j < rf->classCount; ++j) {
+                if (tab[j] > max) {
+                    max = tab[j];
+                    vote = j;
+                }
+            }
+
+            votes[vote]++;
+            free(tab);
+        }
+
+        int maxVote = 0;
+        int maxClassVote = 0;
+
+        // Recherche de la classe avec le plus de votes
+        for (int i = 0; i < rf->classCount; i++) {
+            if (votes[i] > maxVote) {
+                maxVote = votes[i];
+                maxClassVote = i;
             }
         }
 
-        votes[vote]++;
-        free(tab);
-    }
+        free(votes);
 
-    int maxVote = 0;
-    int maxClassVote = 0;
-
-    // Recherche de la classe avec le plus de votes
-    for (int i = 0; i < rf->classCount; i++) {
-        if (votes[i] > maxVote) {
-            maxVote = votes[i];
-            maxClassVote = i;
+        return maxClassVote;
+    } else {
+        // Pr�diction pour chacun des arbres
+        for (int i = 0; i < rf->treeCount; i++) {
+            // La pr�diction renvoie la class
+            int vote = DecisionTree_predict_normal(rf->trees[i], instance);
+            votes[vote]++;
         }
+
+        int maxVote = 0;
+        int maxClassVote = 0;
+
+        // Recherche de la classe avec le plus de votes
+        for (int i = 0; i < rf->classCount; i++) {
+            if (votes[i] > maxVote) {
+                maxVote = votes[i];
+                maxClassVote = i;
+            }
+        }
+
+        free(votes);
+
+        return maxClassVote;
     }
 
-    free(votes);
-
-    return maxClassVote;
 }
 
 float RandomForest_evaluate(RandomForest *rf, Dataset *data) {

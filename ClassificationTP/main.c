@@ -1,11 +1,12 @@
 #include "Settings.h"
 
-// Merci de descendre juste en dessous pour avoir accès aux différents configurations possibles.
+// Merci de descendre juste en dessous pour avoir accï¿½s aux diffï¿½rents configurations possibles.
 // Et pas au niveau de la structure
 DecisionArgs Args = {
     .split = SPLIT_NORMAL,
     .gini = GINI_ENTROPY,
     .featureBaggingProportion = 1.f,
+    .enableSigmoid = false,
     .useFeatureBagging = false,
     .useLocalFeatureBagging = false,
     .instanceBaggingProportion = 1.f, // Ne pas modifier
@@ -23,27 +24,27 @@ DecisionArgs Args = {
     .saveForest = false,
 };
 
-// Bonjour, voici les différents configuration possibles permettant de tester notre travail.
-// Pour tester une configuration, il suffit de mettre la valeur à true et de lancer le programme.
-// Attention, merci d'au moins mettre le premier define de chaque paquet à false si ce n'est pas celui sélectionner.
+// Bonjour, voici les diffï¿½rents configuration possibles permettant de tester notre travail.
+// Pour tester une configuration, il suffit de mettre la valeur ï¿½ true et de lancer le programme.
+// Attention, merci d'au moins mettre le premier define de chaque paquet ï¿½ false si ce n'est pas celui sï¿½lectionner.
 
-// Permet de tester la création d'un arbre de décision simple, sans forêt, avec le calcul du gini (minj+maxj)/2.
+// Permet de tester la crï¿½ation d'un arbre de dï¿½cision simple, sans forï¿½t, avec le calcul du gini (minj+maxj)/2.
 #define TEST_SIMPLE_PENDIGITS false
 
 
-// Permet de tester la création d'un arbre de décision simple, sans forêt, avec le calcul du gini optimisé à la réduction du nombre de node
-// À tester avec TEST_SIMPLE_PENDIGITS à true
+// Permet de tester la crï¿½ation d'un arbre de dï¿½cision simple, sans forï¿½t, avec le calcul du gini optimisï¿½ ï¿½ la rï¿½duction du nombre de node
+// ï¿½ tester avec TEST_SIMPLE_PENDIGITS ï¿½ true
 //#define TEST_SIMPLE_PENDIGITS_WITH_GINI_LESS_NODE true
 
 
 // |
 // | FORET PENDIGITS
 // |
-// Permet de tester la création d'une forêt d'arbre de décision, avec le calcul du gini (minj+maxj)/2.
+// Permet de tester la crï¿½ation d'une forï¿½t d'arbre de dï¿½cision, avec le calcul du gini (minj+maxj)/2.
 #define TEST_PENDIGITS_FOREST false
 #define TEST_PENDIGITS_FOREST_TREE_COUNT 40
 #define TEST_PENDIGITS_FEATURES_BAGGING true
-// Le bagging local est beaucoup plus rapide que le bagging normal, mais un tout petit peu moins précis. 
+// Le bagging local est beaucoup plus rapide que le bagging normal, mais un tout petit peu moins prï¿½cis.
 // Beaucoup moins de Node
 #define TEST_PENDIGITS_LOCAL_FEATURES_BAGGING false
 #define TEST_PENDIGITS_INSTANCE_BAGGING true
@@ -129,7 +130,7 @@ int main(int argc, char* argv[]) {
     time_t end = time(NULL);
     printf("Execution time: %d seconds\n", (int)(end - start));
 }
-#endif 
+#endif
 
 #if TEST_BEST_MNIST
 int main(int argc, char* argv[]) {
@@ -143,7 +144,7 @@ int main(int argc, char* argv[]) {
     time_t end = time(NULL);
     printf("Execution time: %d seconds\n", (int)(end - start));
 }
-#endif 
+#endif
 
 //int main(int argc, char* args[]) {
 //   // printf("Dataset\n");

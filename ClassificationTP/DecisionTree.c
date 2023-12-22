@@ -103,25 +103,49 @@ void DecisionTree_predict(DecisionTreeNode *decisionTree, Instance *instance, fl
     DecisionTree_predict(decisionTree->right, instance, tab, (1 - score) * scores);
 }
 
+int DecisionTree_predict_normal(DecisionTreeNode* decisionTree, Instance* instance)
+{
+    // Si on est sur une feuille
+    if (decisionTree->left == NULL && decisionTree->right == NULL) {
+        return decisionTree->classID;
+    }
+
+    // Sinon on continue la descente en fonction du seuil
+    if (instance->values[decisionTree->split.featureID] < decisionTree->split.threshold) {
+        return DecisionTree_predict_normal(decisionTree->left, instance);
+    }
+    else {
+        return DecisionTree_predict_normal(decisionTree->right, instance);
+    }
+}
+
 float DecisionTree_evaluate(DecisionTreeNode *decisionTree, Dataset *dataset) {
     int correctEvaluation = 0;
     // It�re sur toutes les instances du dataset pour calculer le taux de r�ussite
     for (int i = 0; i < dataset->instanceCount; i++) {
         Instance instance = dataset->instances[i];
-        float *tab = calloc(dataset->classCount, sizeof(float));
-        DecisionTree_predict(decisionTree, &instance, tab, 1);
-        float max = 0;
-        int predictedClassId = 0;
-        for (int j = 0; j < dataset->classCount; ++j) {
-            if (tab[j] > max) {
-                max = tab[j];
-                predictedClassId = j;
+        if (Args.enableSigmoid) {
+            float *tab = calloc(dataset->classCount, sizeof(float));
+            DecisionTree_predict(decisionTree, &instance, tab, 1);
+            float max = 0;
+            int predictedClassId = 0;
+            for (int j = 0; j < dataset->classCount; ++j) {
+                if (tab[j] > max) {
+                    max = tab[j];
+                    predictedClassId = j;
+                }
+            }
+            if (predictedClassId == instance.classID) {
+                correctEvaluation++;
+            }
+            free(tab);
+        } else {
+            int predictedClassId = DecisionTree_predict_normal(decisionTree, &instance);
+            if (predictedClassId == instance.classID) {
+                correctEvaluation++;
             }
         }
-        if (predictedClassId == instance.classID) {
-            correctEvaluation++;
-        }
-        free(tab);
+
     }
 
     return (float) correctEvaluation / (float) dataset->instanceCount;

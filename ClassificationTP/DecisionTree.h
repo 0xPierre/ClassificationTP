@@ -24,3 +24,4 @@ float sigmoid(int x, float threshold);
 void DecisionTree_predict(DecisionTreeNode *tree, Instance *instance, float *tab, float scores);
 
 float DecisionTree_evaluate(DecisionTreeNode *tree, Dataset *dataset);
+int DecisionTree_predict_normal(DecisionTreeNode* decisionTree, Instance* instance);

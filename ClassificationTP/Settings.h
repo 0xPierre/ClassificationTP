@@ -56,6 +56,8 @@ typedef struct sDecisionArgs {
 
     enum GiniType gini;
 
+    bool enableSigmoid;
+
     bool useLocalFeatureBagging;
     bool useFeatureBagging;
     float featureBaggingProportion;
