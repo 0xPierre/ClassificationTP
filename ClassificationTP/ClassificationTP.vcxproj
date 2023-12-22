@@ -141,6 +141,7 @@
     <ClCompile Include="HyperParameters.c" />
     <ClCompile Include="Interface.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="mainold.c" />
     <ClCompile Include="RandomForest.c" />
     <ClCompile Include="Sound.c" />
     <ClCompile Include="Split.c" />

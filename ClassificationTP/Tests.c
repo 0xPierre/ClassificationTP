@@ -46,10 +46,17 @@ void test_train_test_evaluation(Dataset* trainData, Dataset* testData)
     DecisionTreeNode* tree = DecisionTree_create(sp, 0, 30, 1.0f, NULL);
     if (!Args.isSilent) printf("Generation d'un arbre de %d noeuds\n", Decision_nodeCount(tree));
     if (!Args.isSilent) printf("Evaluation of the tree with train\n");
-    float scoreTrain = DecisionTree_evaluate(tree, trainData);
-    if (!Args.isSilent) printf("Evaluation of the tree with test\n");
-    float scoreTest = DecisionTree_evaluate(tree, testData);
-    if (!Args.isSilent) printf("train = %.3f, test = %.3f\n", scoreTrain, scoreTest);
+
+    if (!Args.isInVPL) {
+        float scoreTrain = DecisionTree_evaluate(tree, trainData);
+        if (!Args.isSilent) printf("Evaluation of the tree with test\n");
+        float scoreTest = DecisionTree_evaluate(tree, testData);
+        if (!Args.isSilent) printf("train = %.3f, test = %.3f\n", scoreTrain, scoreTest);
+    }
+    else {
+        DecisionTree_evaluate(tree, testData);
+    }
+
     Subproblem_destroy(sp);
     DecisionTree_destroy(tree);
     Dataset_destroy(trainData);
@@ -358,7 +365,7 @@ void StartTest() {
 
     if (Args.filtersDatasets) {
         for (int i = 0; i < strlen(Args.filters); i++) {
-            printf("Filter %d | type %c\n", i, Args.filters[i]);
+            if (!Args.isSilent) printf("Filter %d | type %c\n", i, Args.filters[i]);
             if (Args.filters[i] == '0') {
                 TransformGrayToWhite(trainData, 20, true, 1, 255);
                 TransformGrayToWhite(testData, 20, true, 1, 255);
@@ -369,8 +376,7 @@ void StartTest() {
 			}
         }
     }
-
-    if (strcmp(Args.pathForest, "") == 1) {
+    if (Args.useLoadForest) {
         rf = LoadForestFromFile(Args.pathForest);
     }
     else {
@@ -386,14 +392,15 @@ void StartTest() {
     // Only forest here
     // Check train
 
-    if (!Args.isSilent) printf("Evaluation of the forest with train\n");
-    float trainScore = RandomForest_evaluate(rf, trainData);
-
     if (!Args.isSilent) printf("Evaluation of the forest with test\n");
     float testScore = RandomForest_evaluate(rf, testData);
 
-    printf("Numbers of node: %d\n", RandomForest_nodeCount(rf));
-    printf("Score | Train: %.3f, Test: %.3f\n", trainScore, testScore);
+    if (!Args.isInVPL) {
+        if (!Args.isSilent) printf("Evaluation of the forest with train\n");
+        float trainScore = RandomForest_evaluate(rf, trainData);
+        if (!Args.isSilent)printf("Numbers of node: %d\n", RandomForest_nodeCount(rf));
+        if (!Args.isSilent)printf("Score | Train: %.3f, Test: %.3f\n", trainScore, testScore);
+    }
 
 
     if (Args.saveForest) {

@@ -153,6 +153,9 @@ float RandomForest_evaluate(RandomForest *rf, Dataset *data) {
     // It�re sur toutes les instances du dataset pour calculer le taux de r�ussite
     for (int i = 0; i < data->instanceCount; i++) {
         int prediction = RandomForest_predict(rf, &data->instances[i]);
+        if (Args.isInVPL) {
+            printf("%d\n", prediction);
+        }
         if (prediction == data->instances[i].classID)
             correctCount++;
     }

@@ -138,12 +138,16 @@ float DecisionTree_evaluate(DecisionTreeNode *decisionTree, Dataset *dataset) {
             if (predictedClassId == instance.classID) {
                 correctEvaluation++;
             }
+            if (Args.isInVPL)
+                printf("%d\n", predictedClassId);
             free(tab);
         } else {
             int predictedClassId = DecisionTree_predict_normal(decisionTree, &instance);
             if (predictedClassId == instance.classID) {
                 correctEvaluation++;
             }
+            if (Args.isInVPL)
+                printf("%d\n", predictedClassId);
         }
 
     }

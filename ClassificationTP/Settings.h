@@ -71,6 +71,7 @@ typedef struct sDecisionArgs {
     bool isSilent;
     int prunningThreshold;
 
+    bool useLoadForest;
     char pathForest[128];
 
     // List of fitlers to apply
@@ -81,6 +82,9 @@ typedef struct sDecisionArgs {
 
     bool saveForest;
     char pathSaveForest[128];
+
+
+    bool isInVPL;
 
 } DecisionArgs;
 

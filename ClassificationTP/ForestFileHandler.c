@@ -37,7 +37,7 @@ DecisionTreeNode* LoadNodeFromFile(FILE* file) {
 void ForestFileDump(RandomForest* rf, char path[128]) {
 	FILE* file = fopen(path, "w");
 
-	printf("Saving file %s\n", path);
+	if (!Args.isSilent) printf("Saving file %s\n", path);
 
 	// Sauvegarde du nombre d'arbre et du nombre de class dans la forêt
 	fprintf(file, "%d %d\n", rf->treeCount, rf->classCount);
@@ -58,7 +58,7 @@ void ForestFileDump(RandomForest* rf, char path[128]) {
 
 
 RandomForest* LoadForestFromFile(char path[128]) {
-	printf("Opening file %s\n", path);
+	if (!Args.isSilent) printf("Opening file %s\n", path);
 	FILE* file = fopen(path, "r");
 	if (file == NULL) {
 		printf("Erreur opening file\n");
