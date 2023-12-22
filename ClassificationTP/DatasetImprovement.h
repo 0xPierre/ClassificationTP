@@ -27,7 +27,10 @@ Used to apply a median filter to the dataset
 */
 void ApplyMedianFilter(Dataset* dataset);
 
-
+/*
+Apply median filter to one instance
+*/
+void ApplyMedianFilterForOneInstance(Instance* instance, int featureCount);
 /*
 Used to copy a dataset
 */

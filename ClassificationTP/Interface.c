@@ -5,7 +5,7 @@ const int images_shade_of_white[] = {10, 50, 80, 120, 190, 220};
 int clicked = 0;
 // 0 = paint using sum of neighbors
 // 1 = paint using brush
-int typeOfBrush = 0;
+int typeOfBrush = 1;
 
 SDL_Window *initSDL() {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -106,20 +106,27 @@ void applyBrush(int matrix[FEATURES_COUNT][FEATURES_COUNT], float x, float y, in
 
     if (brushSize < 1) return;
 
-    float startX = (x - brushSize < 0) ? 0 : x - brushSize;
-    float startY = (y - brushSize < 0) ? 0 : y - brushSize;
-    float endX = (x + brushSize >= FEATURES_COUNT) ? FEATURES_COUNT - 1 : x + brushSize;
-    float endY = (y + brushSize >= FEATURES_COUNT) ? FEATURES_COUNT - 1 : y + brushSize;
-    for (float i = startX; i <= endX; ++i) {
-        for (float j = startY; j <= endY; ++j) {
-            float distanceSquared = (x - i) * (x - i) + (y - j) * (y - j);
-            int intensity = 255 - ((int) distanceSquared * 255) / (brushSize * brushSize);
+    //float startX = (x - brushSize < 0) ? 0 : x - brushSize;
+    //float startY = (y - brushSize < 0) ? 0 : y - brushSize;
+    //float endX = (x + brushSize >= FEATURES_COUNT) ? FEATURES_COUNT - 1 : x + brushSize;
+    //float endY = (y + brushSize >= FEATURES_COUNT) ? FEATURES_COUNT - 1 : y + brushSize;
+    //for (float i = startX; i <= endX; ++i) {
+    //    for (float j = startY; j <= endY; ++j) {
+    //        float distanceSquared = (x - i) * (x - i) + (y - j) * (y - j);
+    //        int intensity = 255 - ((int) distanceSquared * 255) / (brushSize * brushSize);
 
-            intensity = (intensity < 0) ? 0 : (intensity > 255) ? 255 : intensity;
+    //        intensity = (intensity < 0) ? 0 : (intensity > 255) ? 255 : intensity;
 
-            matrix[(int) i][(int) j] = fmax(intensity, matrix[(int) i][(int) j]);
-        }
-    }
+    //        //matrix[(int) i][(int) j] = fmax(intensity, matrix[(int) i][(int) j]);
+    //        matrix[(int) i][(int) j] = 255;
+    //    }
+    //}
+    for (int i = x - brushSize; i <= x; ++i) {
+        for (int j = y - brushSize; j <= y; ++j) {
+			if (i < 0 || i >= FEATURES_COUNT || j < 0 || j >= FEATURES_COUNT) continue;
+			matrix[i][j] = 255;
+		}
+	}
 }
 
 void updatePaintMatrix(Input input, int matrix[FEATURES_COUNT][FEATURES_COUNT], int typeOfBrush) {
@@ -151,8 +158,11 @@ void updatePaintMatrix(Input input, int matrix[FEATURES_COUNT][FEATURES_COUNT], 
             applyConvolution(matrix, x, y + 1);
             applyConvolution(matrix, x + 1, y + 1);
         } else if (typeOfBrush == 1) {
-            applyBrush(matrix, xF, yF, 2);
+            applyBrush(matrix, xF, yF, 1);
         }
+    }
+    else if (input.mouseButton == SDL_BUTTON_RIGHT) {
+        matrix[x][y] = 0;
     }
 }
 
@@ -273,7 +283,8 @@ void RunSdl(RandomForest *rf) {
         exit(1);
     }
 
-    // Initialise la SDL2 Mixer
+
+    // Initialize SDL2 Mixer
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) < 0) {
         printf("ERROR - Mix_OpenAudio %s\n", Mix_GetError());
         assert(false);
@@ -288,8 +299,7 @@ void RunSdl(RandomForest *rf) {
     predictionInstance->values = (int *) calloc(FEATURES_COUNT * FEATURES_COUNT, sizeof(int));
     AssertNew(predictionInstance->values);
 
-
-
+    
     while (!input.quit) {
         input = getInputs();
 
@@ -301,30 +311,48 @@ void RunSdl(RandomForest *rf) {
         */
         if (input.mouseButton == SDL_BUTTON_MIDDLE) {
             resetCanvas(matrix);
-        } else
+        }
+        else 
             updatePaintMatrix(input, matrix, typeOfBrush);
 
         for (int x = 0; x < FEATURES_COUNT; x++) {
             for (int y = 0; y < FEATURES_COUNT; y++) {
-                predictionInstance->values[(x * FEATURES_COUNT) + y] = matrix[x][y];
+                predictionInstance->values[(x * FEATURES_COUNT) + y] = matrix[y][x];
             }
         }
 
-        int prediction = RandomForest_predict(rf, predictionInstance);
 
-        Text settings;
-        settings.x = 600;
-        settings.y = 200;
-        sprintf(settings.label, "%d", prediction);
-        settings.color.r = 94;
-        settings.color.g = 23;
-        settings.color.b = 235;
+        bool hasSomePixelWhoAreReallyNotBlack = false;
 
-        settings.fontSize = 400;
-        settings.recWidth = 150;
-        settings.rectHeight = 300;
+        for (int x = 0; x < FEATURES_COUNT; x++) {
+            for (int y = 0; y < FEATURES_COUNT; y++) {
+                if (matrix[x][y] != 0) {
+					hasSomePixelWhoAreReallyNotBlack = true;
+					break;
+				}
+			}
+		}
 
-        Text_New(settings, renderer);
+        if (hasSomePixelWhoAreReallyNotBlack) {
+            //ApplyMedianFilterForOneInstance(predictionInstance, FEATURES_COUNT);
+            // Change every features that are = 0 to 1
+
+            int prediction = RandomForest_predict(rf, predictionInstance);
+
+            Text settings;
+            settings.x = 600;
+            settings.y = 130;
+            sprintf(settings.label, "%d", prediction);
+            settings.color.r = 94;
+            settings.color.g = 23;
+            settings.color.b = 235;
+
+            settings.fontSize = 400;
+            settings.recWidth = 150;
+            settings.rectHeight = 300;
+
+            Text_New(settings, renderer);
+        }
 
 
         for (int x = 0; x < FEATURES_COUNT; x++) {

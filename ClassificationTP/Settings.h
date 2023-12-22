@@ -11,7 +11,7 @@
 #  include <SDL2/SDL.h>
 #  include <SDL2/SDL_image.h>
 #  include <SDL2/SDL_ttf.h>
-#  include <SDL2/SDL_mixer.h>
+//#  include <SDL2/SDL_mixer.h>
 #endif
 
 #include <assert.h>
@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <float.h>
 #include "Dataset.h"
+#include "time.h"
 #include "Split.h"
 #include "DecisionTree.h"
 #include "RandomForest.h"
@@ -29,6 +30,7 @@
 #include "string.h"
 #include "math.h"
 #include "Tests.h"
+#include "HyperParameters.h"
 #include "Text.h"
 #include "Sound.h"
 #include <omp.h>
@@ -44,8 +46,10 @@ enum SplitType {
 
 typedef struct sDecisionArgs {
     int treeCount;
+    int maxDepth;
     enum SplitType split;
 
+    bool useLocalFeatureBagging;
     bool useFeatureBagging;
     float featureBaggingProportion;
 
@@ -54,6 +58,21 @@ typedef struct sDecisionArgs {
 
     char trainPath[128];
     char testPath[128];
+
+    bool isSilent;
+    int prunningThreshold;
+
+    char pathForest[128];
+
+    // List of fitlers to apply
+    // 0 = Gray To White
+    // 1 = Median
+    char filters[128];
+    bool filtersDatasets;
+
+    bool saveForest;
+    char pathSaveForest[128];
+
 } DecisionArgs;
 
 extern DecisionArgs Args;

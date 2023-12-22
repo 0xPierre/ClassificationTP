@@ -61,10 +61,23 @@ Split Split_compute_normal(Subproblem* subproblem, bool* authorizedFeatures) {
     float bestGini = FLT_MAX;
     Split bestSplit;
 
+    bool *localAuthorizedFeatures = (bool *)calloc(subproblem->featureCount, sizeof(bool));
+    if (Args.useLocalFeatureBagging) {
+        AssertNew(localAuthorizedFeatures);
+
+        int localAuthorizedFeaturesCount = sqrt(subproblem->featureCount);
+        //int localAuthorizedFeaturesCount = (int)((float)subproblem->featureCount * (sqrtf(Args.featureBaggingProportion) / (float)subproblem->featureCount));
+        for (int i = 0; i < localAuthorizedFeaturesCount; i++) {
+            int randomIndex = ((rand() ^ (rand() << 15)) & 0x7FFFFFFF) % subproblem->featureCount;
+            localAuthorizedFeatures[randomIndex] = true;
+        }
+    }
+
     // On itere sur toutes les features
     for (int featureId = 0; featureId < subproblem->featureCount; featureId++) {
         // Lorsque l'on utilise le bagging, on ne prend pas en compte les features non autorises
         if (Args.useFeatureBagging && !authorizedFeatures[featureId]) continue;
+        if (Args.useLocalFeatureBagging && !localAuthorizedFeatures[featureId]) continue;
         // On cherche minj et maxj
         int minj = subproblem->instances[0]->values[featureId];
         int maxj = subproblem->instances[0]->values[featureId];

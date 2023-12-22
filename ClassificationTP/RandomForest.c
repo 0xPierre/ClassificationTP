@@ -59,7 +59,8 @@ RandomForest *RandomForest_create(
     {
 #pragma omp for
         for (int i = 0; i < numberOfTrees; i++) {
-            printf("Creating tree %d\n", i);
+            if (!Args.isSilent)
+                printf("Creating tree %d\n", i);
             Subproblem *subproblem = Dataset_bagging(data, baggingProportion);
 
             // On récupère les features autorisées pour le bagging
