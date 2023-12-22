@@ -40,14 +40,21 @@
 
 
 enum SplitType {
+    SPLIT_NORMAL,
+    SPLIT_LESS_NODE,
+};
+
+enum GiniType {
     GINI_NORMAL,
-    GINI_LESS_NODE,
+    GINI_ENTROPY
 };
 
 typedef struct sDecisionArgs {
     int treeCount;
     int maxDepth;
     enum SplitType split;
+
+    enum GiniType gini;
 
     bool useLocalFeatureBagging;
     bool useFeatureBagging;
