@@ -22,6 +22,10 @@ Paint AI is built with kind of Technologies😃:
 [![C](https://img.shields.io/badge/C-3178c6?style=for-the-badge&logo=c&labelColor=gray)](https://www.typescriptlang.org/)
 [![Linux](https://img.shields.io/badge/Linux-DD0031?style=for-the-badge&logo=linux&labelColor=gray)](https://kernel.org)
 
+Gcc command on linux in ClassificationTP folder: 
+`gcc *.c -lm -fopenmp -lSDL2 -lSDL2_image -lSDL2_ttf  -lSDL2_mixer`
+
+
 ## Enhancement 🚄
 
 - Add GUI interface

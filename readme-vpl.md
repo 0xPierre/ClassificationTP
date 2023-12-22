@@ -7,6 +7,9 @@
 
 Paint AI is built with kind of Technologies😃:
 
+Gcc command on linux in ClassificationTP folder: 
+`gcc *.c -lm -fopenmp -lSDL2 -lSDL2_image -lSDL2_ttf  -lSDL2_mixer`
+
 ## Enhancement 🚄
 
 - Add GUI interface

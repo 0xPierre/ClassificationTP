@@ -144,6 +144,15 @@ DecisionArgs Args = {
 #define TEST_HYPERPARAMETERS_TREE_COUNT 3
 
 
+// |
+// | Test de notre meilleur forêt : 98.7 % de réussite
+// | A tester en local
+#define TEST_BEST_MNIST false
+#define TEST_BEST_MNIST_FOREST_PATH "../Forests/MNIST_FILTERED_HYPERPARAMETERS_98_65.dfm"
+// Merci de mettre les bons chemins pour les datasets
+#define TEST_BEST_MNIST_TRAIN_PATH "../Datasets/MNIST_train.txt"
+#define TEST_BEST_MNIST_TEST_PATH "../Datasets/MNIST_test.txt"
+
 #if TEST_VPL_SIMPLE_FOREST_WITH_FEATURE_BAGGING
 int main(int argc, char* args[]) {
 	Args.isSilent = true;
@@ -266,6 +275,23 @@ int main(int argc, char* args[]) {
 int main(int argc, char* argv[]) {
 	RandomForest* rf = LoadForestFromFile(RUN_SDL_PATH_FOREST);
 	RunSdl(rf);
+
+	return 0;
+}
+#endif
+
+#if TEST_BEST_MNIST
+int main(int argc, char* argv[]) {
+	Args.useLoadForest = true;
+	strcpy(Args.pathForest, TEST_BEST_MNIST_FOREST_PATH);
+	strcpy(Args.testPath, TEST_BEST_MNIST_TEST_PATH);
+	strcpy(Args.trainPath, TEST_BEST_MNIST_TRAIN_PATH);
+
+	Args.filtersDatasets = true;
+	Args.filters[0] = '0';
+	Args.filters[1] = '1';
+
+	StartTest();
 
 	return 0;
 }
