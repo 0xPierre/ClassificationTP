@@ -34,28 +34,26 @@ void test_node_tree_count(char *pathTrain)
 }
 
 
-void test_train_test_evaluation(char *pathTrain, char *pathTest)
+void test_train_test_evaluation(Dataset* trainData, Dataset* testData)
 {
-    printf("Read train dataset\n");
+  /*  printf("Read train dataset\n");
     Dataset* trainData = Dataset_readFromFile(pathTrain);
     printf("Read test dataset\n");
-    Dataset* testData = Dataset_readFromFile(pathTest);
-    printf("Get train subproblem\n");
+    Dataset* testData = Dataset_readFromFile(pathTest);*/
+    if (!Args.isSilent) printf("Get train subproblem\n");
     Subproblem* sp = Dataset_getSubproblem(trainData);
-    printf("Create decision tree\n");
+    if (!Args.isSilent) printf("Create decision tree\n");
     DecisionTreeNode* tree = DecisionTree_create(sp, 0, 30, 1.0f, NULL);
-    printf("Generation d'un arbre de %d noeuds\n", Decision_nodeCount(tree));
-    printf("Evaluation of the tree with train\n");
+    if (!Args.isSilent) printf("Generation d'un arbre de %d noeuds\n", Decision_nodeCount(tree));
+    if (!Args.isSilent) printf("Evaluation of the tree with train\n");
     float scoreTrain = DecisionTree_evaluate(tree, trainData);
-    printf("Evaluation of the tree with test\n");
+    if (!Args.isSilent) printf("Evaluation of the tree with test\n");
     float scoreTest = DecisionTree_evaluate(tree, testData);
-    printf("train = %.3f, test = %.3f\n", scoreTrain, scoreTest);
+    if (!Args.isSilent) printf("train = %.3f, test = %.3f\n", scoreTrain, scoreTest);
     Subproblem_destroy(sp);
     DecisionTree_destroy(tree);
     Dataset_destroy(trainData);
     Dataset_destroy(testData);
-
-    printf("Process ended successfully\n");
 }
 
 
@@ -377,7 +375,7 @@ void StartTest() {
     }
     else {
         if (Args.treeCount == 1) {
-            test_train_test_evaluation(Args.trainPath, Args.testPath);
+            test_train_test_evaluation(trainData, testData);
             return;
 		}
         else {

@@ -5,7 +5,7 @@ void test_split_compute();
 
 void test_node_tree_count(char *pathTrain);
 
-void test_train_test_evaluation(char* pathTrain, char* pathTest);
+void test_train_test_evaluation(Dataset* trainData, Dataset* testData);
 
 void test_Dataset_bagging();
 

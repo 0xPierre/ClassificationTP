@@ -3,8 +3,8 @@
 // Merci de descendre juste en dessous pour avoir acc�s aux diff�rents configurations possibles.
 // Et pas au niveau de la structure
 DecisionArgs Args = {
-    .split = SPLIT_NORMAL,
-    .gini = GINI_ENTROPY,
+    .split = SPLIT_LESS_NODE,
+    .gini = GINI_NORMAL,
     .featureBaggingProportion = 1.f,
     .enableSigmoid = false,
     .useFeatureBagging = false,
@@ -29,12 +29,12 @@ DecisionArgs Args = {
 // Attention, merci d'au moins mettre le premier define de chaque paquet � false si ce n'est pas celui s�lectionner.
 
 // Permet de tester la cr�ation d'un arbre de d�cision simple, sans for�t, avec le calcul du gini (minj+maxj)/2.
-#define TEST_SIMPLE_PENDIGITS false
+#define TEST_SIMPLE_PENDIGITS true
 
 
 // Permet de tester la cr�ation d'un arbre de d�cision simple, sans for�t, avec le calcul du gini optimis� � la r�duction du nombre de node
 // � tester avec TEST_SIMPLE_PENDIGITS � true
-//#define TEST_SIMPLE_PENDIGITS_WITH_GINI_LESS_NODE true
+#define TEST_SIMPLE_PENDIGITS_WITH_GINI_LESS_NODE true
 
 
 // |
@@ -59,7 +59,7 @@ DecisionArgs Args = {
 // |
 // | RandomForest MNIST
 // |
-#define TEST_MNIST_RANDOM_FOREST true
+#define TEST_MNIST_RANDOM_FOREST false
 #define TEST_MNIST_RANDOM_FOREST_TRAIN_PATH "../Datasets/MNIST_train.txt"
 #define TEST_MNIST_RANDOM_FOREST_TEST_PATH "../Datasets/MNIST_test.txt"
 #define TEST_MNIST_RANDOM_FOREST_USE_FILTERS true
@@ -74,6 +74,11 @@ DecisionArgs Args = {
 #define TEST_BEST_MNIST_FOREST_PATH "../Forests/MNIST_FILTERED_HYPERPARAMETERS_98_65.dfm"
 #define TEST_BEST_MNIST_TRAIN_PATH "../Datasets/MNIST_train_filtered.txt"
 #define TEST_BEST_MNIST_TEST_PATH "../Datasets/MNIST_test_filtered.txt"
+
+// |
+// | MNIST TEST passage sous 32ko pour arduino
+// | Test
+// |
 
 #if TEST_SIMPLE_PENDIGITS
 int main(int argc, char* args[]) {
@@ -109,6 +114,8 @@ int main(int argc, char* args[]) {
 int main(int argc, char* argv[]) {
     RandomForest* rf = LoadForestFromFile(TEST_SDL_FOREST_PATH);
     RunSdl(rf);
+
+    return 0;
 }
 #endif
 
@@ -129,6 +136,8 @@ int main(int argc, char* argv[]) {
     StartTest();
     time_t end = time(NULL);
     printf("Execution time: %d seconds\n", (int)(end - start));
+
+    return 0;
 }
 #endif
 
@@ -143,8 +152,12 @@ int main(int argc, char* argv[]) {
     StartTest();
     time_t end = time(NULL);
     printf("Execution time: %d seconds\n", (int)(end - start));
+
+    return 0;
 }
 #endif
+
+//#if TEST_BEST_MNIST_LOW_NODE
 
 //int main(int argc, char* args[]) {
 //   // printf("Dataset\n");
