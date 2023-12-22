@@ -1,25 +1,36 @@
 #include "Settings.h"
 
 
+float calculate_gini(Subproblem *subproblem) {
+    float instanceCount = (float) subproblem->instanceCount > 0 ? (float) subproblem->instanceCount : 1.0f;
 
-float calculate_gini(Subproblem* subproblem) {
-    float instanceCount = (float)subproblem->instanceCount > 0 ? (float)subproblem->instanceCount : 1.0f;
-    float gini = 1.0f;
-    // Calcule le gini
-    for (int i = 0; i < subproblem->classCount; i++) {
-        float p = (float)subproblem->classes[i].instanceCount / instanceCount;
-        gini -= p * p;
+    if (Args.gini == GINI_NORMAL) {
+        float gini = 1.0f;
+        // Calculate the gini
+        for (int i = 0; i < subproblem->classCount; i++) {
+            float p = (float) subproblem->classes[i].instanceCount / instanceCount;
+            gini -= p * p;
+        }
+        return gini;
+    } else if (Args.gini == GINI_ENTROPY) {
+        float entropy = 0;
+        // Calculate the entropy
+        for (int i = 0; i < subproblem->classCount; i++) {
+            float p = (float) subproblem->classes[i].instanceCount / instanceCount;
+            if (p > 0) { // Avoid log(0)
+                entropy += p * log2(p);
+            }
+        }
+        return -1 * entropy;
     }
-
-    return gini;
 }
 
-float Split_gini(Subproblem* sp, int featureID, float threshold) {
+float Split_gini(Subproblem *sp, int featureID, float threshold) {
     int instanceCount = sp->instanceCount;
 
     // Cr�ation des subproblemes droite gauche
-    Subproblem* leftSubproblem = Subproblem_create(instanceCount, sp->featureCount, sp->classCount);
-    Subproblem* rightSubproblem = Subproblem_create(instanceCount, sp->featureCount, sp->classCount);
+    Subproblem *leftSubproblem = Subproblem_create(instanceCount, sp->featureCount, sp->classCount);
+    Subproblem *rightSubproblem = Subproblem_create(instanceCount, sp->featureCount, sp->classCount);
 
     if (leftSubproblem == NULL || rightSubproblem == NULL) {
         printf("Subproblem Memory allocation failed - left or right Subproblem\n");
@@ -28,11 +39,10 @@ float Split_gini(Subproblem* sp, int featureID, float threshold) {
 
     // Division des instances en fonction du seuil
     for (int i = 0; i < instanceCount; i++) {
-        Instance* instance = sp->instances[i];
+        Instance *instance = sp->instances[i];
         if (instance->values[featureID] < threshold) {
             Subproblem_insert(leftSubproblem, instance);
-        }
-        else {
+        } else {
             Subproblem_insert(rightSubproblem, instance);
         }
     }
@@ -41,13 +51,13 @@ float Split_gini(Subproblem* sp, int featureID, float threshold) {
     float giniLeft = calculate_gini(leftSubproblem);
     float giniRight = calculate_gini(rightSubproblem);
 
-   /* if (giniLeft == 0) giniLeft = 0.0001f;
-    if (giniRight -) giniRight = 0.0001f;*/
+    /* if (giniLeft == 0) giniLeft = 0.0001f;
+     if (giniRight -) giniRight = 0.0001f;*/
 
     float gini =
-        ((float)leftSubproblem->instanceCount / instanceCount) * giniLeft
-        +
-        ((float)rightSubproblem->instanceCount / instanceCount) * giniRight;
+            ((float) leftSubproblem->instanceCount / instanceCount) * giniLeft
+            +
+            ((float) rightSubproblem->instanceCount / instanceCount) * giniRight;
 
     Subproblem_destroy(leftSubproblem);
     Subproblem_destroy(rightSubproblem);
@@ -56,12 +66,12 @@ float Split_gini(Subproblem* sp, int featureID, float threshold) {
 }
 
 
-Split Split_compute_normal(Subproblem* subproblem, bool* authorizedFeatures) {
+Split Split_compute_normal(Subproblem *subproblem, bool *authorizedFeatures) {
     // Valeur max
     float bestGini = FLT_MAX;
     Split bestSplit;
 
-    bool *localAuthorizedFeatures = (bool *)calloc(subproblem->featureCount, sizeof(bool));
+    bool *localAuthorizedFeatures = (bool *) calloc(subproblem->featureCount, sizeof(bool));
     if (Args.useLocalFeatureBagging) {
         AssertNew(localAuthorizedFeatures);
 
@@ -93,7 +103,7 @@ Split Split_compute_normal(Subproblem* subproblem, bool* authorizedFeatures) {
             }
         }
 
-        float threshold = ((float)maxj + (float)minj) / 2;
+        float threshold = ((float) maxj + (float) minj) / 2;
 
         // Calcul le meilleur gini
         float gini = Split_gini(subproblem, featureId, threshold);
@@ -106,7 +116,7 @@ Split Split_compute_normal(Subproblem* subproblem, bool* authorizedFeatures) {
     return bestSplit;
 }
 
-Split Split_compute_less_node(Subproblem* subproblem, bool* authorizedFeatures) {
+Split Split_compute_less_node(Subproblem *subproblem, bool *authorizedFeatures) {
     // Valeur max
     float bestGini = FLT_MAX;
     Split bestSplit;
@@ -132,27 +142,25 @@ Split Split_compute_less_node(Subproblem* subproblem, bool* authorizedFeatures) 
 
         // On cherche le meilleur seuil entre minj et maxj
         for (int j = minj; j < maxj; j++) {
-            float threshold = (float)j;
-			// Calcul le meilleur gini
-			float gini = Split_gini(subproblem, featureId, threshold);
+            float threshold = (float) j;
+            // Calcul le meilleur gini
+            float gini = Split_gini(subproblem, featureId, threshold);
             if (gini < bestGini) {
-				bestGini = gini;
-				bestSplit.featureID = featureId;
-				bestSplit.threshold = threshold;
-			}
+                bestGini = gini;
+                bestSplit.featureID = featureId;
+                bestSplit.threshold = threshold;
+            }
         }
     }
     return bestSplit;
 }
 
-Split Split_compute(Subproblem* subproblem, bool *authorizedFeatures) {
-    if (Args.split == GINI_NORMAL) {
+Split Split_compute(Subproblem *subproblem, bool *authorizedFeatures) {
+    if (Args.split == SPLIT_NORMAL) {
         return Split_compute_normal(subproblem, authorizedFeatures);
-    }
-    else if (Args.split == GINI_LESS_NODE) {
+    } else if (Args.split == SPLIT_LESS_NODE) {
         Split_compute_less_node(subproblem, authorizedFeatures);
-    }
-    else {
+    } else {
         printf("Split type not recognized\n");
         assert(false);
     }

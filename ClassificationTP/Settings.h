@@ -11,7 +11,7 @@
 #  include <SDL2/SDL.h>
 #  include <SDL2/SDL_image.h>
 #  include <SDL2/SDL_ttf.h>
-//#  include <SDL2/SDL_mixer.h>
+#  include <SDL2/SDL_mixer.h>
 #endif
 
 #include <assert.h>
@@ -40,14 +40,21 @@
 
 
 enum SplitType {
+    SPLIT_NORMAL,
+    SPLIT_LESS_NODE,
+};
+
+enum GiniType {
     GINI_NORMAL,
-    GINI_LESS_NODE,
+    GINI_ENTROPY
 };
 
 typedef struct sDecisionArgs {
     int treeCount;
     int maxDepth;
     enum SplitType split;
+
+    enum GiniType gini;
 
     bool useLocalFeatureBagging;
     bool useFeatureBagging;

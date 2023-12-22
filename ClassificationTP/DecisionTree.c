@@ -86,22 +86,21 @@ int Decision_nodeCount(DecisionTreeNode *decisionTree) {
     return 1 + Decision_nodeCount(decisionTree->left) + Decision_nodeCount(decisionTree->right);
 }
 
-double sigmoid(int x, float threshold) {
-    return 1 / (1 + exp(-8 * ((double) x - threshold)));
+float sigmoid(int x, float threshold) {
+    return (float) (1.0f / (1 + exp(6.0 * (double) (x - threshold))));
 }
 
-int DecisionTree_predict(DecisionTreeNode *decisionTree, Instance *instance) {
-    // Si on est sur une feuille
+void DecisionTree_predict(DecisionTreeNode *decisionTree, Instance *instance, float *tab, float scores) {
+    float score = sigmoid(instance->values[decisionTree->split.featureID], decisionTree->split.threshold);
+
     if (decisionTree->left == NULL && decisionTree->right == NULL) {
-        return decisionTree->classID;
+        tab[decisionTree->classID] += scores;
+        return;
     }
 
-    // Sinon on continue la descente en fonction du seuil
-    if (instance->values[decisionTree->split.featureID] < decisionTree->split.threshold) {
-        return DecisionTree_predict(decisionTree->left, instance);
-    } else {
-        return DecisionTree_predict(decisionTree->right, instance);
-    }
+    // Continue the descent based on the threshold
+    DecisionTree_predict(decisionTree->left, instance, tab, score * scores);
+    DecisionTree_predict(decisionTree->right, instance, tab, (1 - score) * scores);
 }
 
 float DecisionTree_evaluate(DecisionTreeNode *decisionTree, Dataset *dataset) {
@@ -109,10 +108,20 @@ float DecisionTree_evaluate(DecisionTreeNode *decisionTree, Dataset *dataset) {
     // It�re sur toutes les instances du dataset pour calculer le taux de r�ussite
     for (int i = 0; i < dataset->instanceCount; i++) {
         Instance instance = dataset->instances[i];
-        int predictedClassId = DecisionTree_predict(decisionTree, &instance);
+        float *tab = calloc(dataset->classCount, sizeof(float));
+        DecisionTree_predict(decisionTree, &instance, tab, 1);
+        float max = 0;
+        int predictedClassId = 0;
+        for (int j = 0; j < dataset->classCount; ++j) {
+            if (tab[j] > max) {
+                max = tab[j];
+                predictedClassId = j;
+            }
+        }
         if (predictedClassId == instance.classID) {
             correctEvaluation++;
         }
+        free(tab);
     }
 
     return (float) correctEvaluation / (float) dataset->instanceCount;
