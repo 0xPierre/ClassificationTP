@@ -15,6 +15,7 @@ Gcc command on linux in ClassificationTP folder:
 - Add GUI interface
 - Add sigmoid activation function
 - Add entropy feature
+- Better split compute
 - Add multi threading tree creation
 - Convolution matrix
 - Real time number recognized
