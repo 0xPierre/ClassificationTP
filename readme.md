@@ -24,6 +24,19 @@ Paint AI is built with kind of Technologies😃:
 
 ## Enhancement 🚄
 
+- Add GUI interface
+- Add sigmoid activation function
+- Add entropy feature
+- Add multi threading tree creation
+- Convolution matrix
+- Real time number recognized
+- Save learnings in a file
+- Add bagging (Intances and Features)
+- Dataset editing (colors filters, copy...)
+- Search for the best hyperparameters.
+
+**More details below 👇️**
+
 ##### Add GUI interface
 In order to have a better user experience we designed a beautiful paint area to
 unleash your potential.
@@ -39,7 +52,7 @@ With this method all the tree is cross which avoid to miss the best solution.
 In details a score is calculated for each node and duplicated with his parents.
 When all leafs are reach, the leaf with the highest score is returned.
 
-##### Add entrypoint feature
+##### Add entropy feature
 Another methode to compute impurity with log math function.
 
 ##### Add multi threading tree creation
@@ -68,12 +81,14 @@ The idea behind this idea is to have efficient tree able to quickly sort instanc
 For this we need trees with uniq split characteristics and bagging allow to do that.
 Instead, to take all the instances and all the features we take randomly few of them to have bigger diversity and get better results.
 
-##### Dataset edited (colors filters, copy...)
+##### Dataset editing (colors filters, copy...)
 Improve dataset quality by removing parasite pixels and more...
 
 ##### Search for the best hyperparameters.
 Have a good function is good but have good functions and coefficient parameters is better 😆.
 That why we created several functions to find the best coefficient for our functions.
+We used an AWS server with 24 CPU core to do this.
+
 ## How to contribute 🚀
 
 Thank you for your contribution to the open source world !😍
