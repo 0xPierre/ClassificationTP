@@ -3,7 +3,8 @@
 // Merci de descendre juste en dessous pour avoir accès aux différents configurations possibles.
 // Et pas au niveau de la structure
 DecisionArgs Args = {
-    .split = GINI_NORMAL,
+    .split = SPLIT_NORMAL,
+    .gini = GINI_ENTROPY,
     .featureBaggingProportion = 1.f,
     .useFeatureBagging = false,
     .useLocalFeatureBagging = false,
