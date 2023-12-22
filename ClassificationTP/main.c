@@ -1,7 +1,7 @@
 #include "Settings.h"
 
 // Merci de descendre juste en dessous pour avoir accès aux différents configurations possibles.
-
+// Et pas au niveau de la structure
 DecisionArgs Args = {
     .split = GINI_NORMAL,
     .featureBaggingProportion = 1.f,
@@ -32,7 +32,7 @@ DecisionArgs Args = {
 
 // Permet de tester la création d'un arbre de décision simple, sans forêt, avec le calcul du gini optimisé à la réduction du nombre de node
 // À tester avec TEST_SIMPLE_PENDIGITS à true
-#define TEST_SIMPLE_PENDIGITS_WITH_GINI_LESS_NODE false
+//#define TEST_SIMPLE_PENDIGITS_WITH_GINI_LESS_NODE true
 
 
 // |
@@ -42,24 +42,40 @@ DecisionArgs Args = {
 #define TEST_PENDIGITS_FOREST false
 #define TEST_PENDIGITS_FOREST_TREE_COUNT 40
 #define TEST_PENDIGITS_FEATURES_BAGGING true
-// Le bagging local est beaucoup plus rapide que le bagging normal, mais un tout petit peu moins précis.
+// Le bagging local est beaucoup plus rapide que le bagging normal, mais un tout petit peu moins précis. 
+// Beaucoup moins de Node
 #define TEST_PENDIGITS_LOCAL_FEATURES_BAGGING false
 #define TEST_PENDIGITS_INSTANCE_BAGGING true
 #define TEST_PENDIGITS_INSTANCE_BAGGING_PROPORTION 0.5f
 
 // |
-// | FORET MNIST
-// |
-
-// |
 // | Run SDL
 // |
-#define TEST_SDL true
+#define TEST_SDL false
 #define TEST_SDL_FOREST_PATH "../Forests/FOREST_TRAINED_FOR_SDL.dfm"
+
+// |
+// | RandomForest MNIST
+// |
+#define TEST_MNIST_RANDOM_FOREST true
+#define TEST_MNIST_RANDOM_FOREST_TRAIN_PATH "../Datasets/MNIST_train.txt"
+#define TEST_MNIST_RANDOM_FOREST_TEST_PATH "../Datasets/MNIST_test.txt"
+#define TEST_MNIST_RANDOM_FOREST_USE_FILTERS true
+#define TEST_MNIST_RANDOM_FOREST_USE_LOCAL_FEATURES_BAGGING true
+#define TEST_MNIST_RANDOM_FOREST_USE_FEATURES_BAGGING false
+#define TEST_MNIST_RANDOM_FOREST_TREE_COUNT 20
+
+// |
+// | MNIST 98.7
+// |
+#define TEST_BEST_MNIST false
+#define TEST_BEST_MNIST_FOREST_PATH "../Forests/MNIST_FILTERED_HYPERPARAMETERS_98_65.dfm"
+#define TEST_BEST_MNIST_TRAIN_PATH "../Datasets/MNIST_train_filtered.txt"
+#define TEST_BEST_MNIST_TEST_PATH "../Datasets/MNIST_test_filtered.txt"
 
 #if TEST_SIMPLE_PENDIGITS
 int main(int argc, char* args[]) {
-    Args.split = USE_GINI_LESS_NODE ? GINI_LESS_NODE : GINI_NORMAL;
+    //Args.split = TEST_SIMPLE_PENDIGITS_WITH_GINI_LESS_NODE ? GINI_LESS_NODE : GINI_NORMAL;
 
     strcpy(Args.trainPath, "../Datasets/PENDIGITS_train.txt");
     strcpy(Args.testPath, "../Datasets/PENDIGITS_test.txt");
@@ -69,6 +85,7 @@ int main(int argc, char* args[]) {
     return 0;
 }
 #endif 
+
 
 #if TEST_PENDIGITS_FOREST
 int main(int argc, char* args[]) {
@@ -88,11 +105,44 @@ int main(int argc, char* args[]) {
 
 #if TEST_SDL
 int main(int argc, char* argv[]) {
-    //strcpy(Args.pathForest, TEST_SDL_FOREST_PATH);
     RandomForest* rf = LoadForestFromFile(TEST_SDL_FOREST_PATH);
     RunSdl(rf);
 }
 #endif
+
+#if TEST_MNIST_RANDOM_FOREST
+int main(int argc, char* argv[]) {
+    time_t start = time(NULL);
+
+    Args.treeCount = TEST_MNIST_RANDOM_FOREST_TREE_COUNT;
+    strcpy(Args.testPath, TEST_MNIST_RANDOM_FOREST_TEST_PATH);
+    strcpy(Args.trainPath, TEST_MNIST_RANDOM_FOREST_TRAIN_PATH);
+    Args.useLocalFeatureBagging = TEST_MNIST_RANDOM_FOREST_USE_LOCAL_FEATURES_BAGGING;
+    Args.useFeatureBagging = TEST_MNIST_RANDOM_FOREST_USE_FEATURES_BAGGING;
+
+    Args.filtersDatasets = TEST_MNIST_RANDOM_FOREST_USE_FILTERS;
+    Args.filters[0] = '0';
+    Args.filters[1] = '1';
+
+    StartTest();
+    time_t end = time(NULL);
+    printf("Execution time: %d seconds\n", (int)(end - start));
+}
+#endif 
+
+#if TEST_BEST_MNIST
+int main(int argc, char* argv[]) {
+    time_t start = time(NULL);
+
+    strcpy(Args.pathForest, TEST_BEST_MNIST_FOREST_PATH);
+    strcpy(Args.testPath, TEST_BEST_MNIST_TEST_PATH);
+    strcpy(Args.trainPath, TEST_BEST_MNIST_TRAIN_PATH);
+
+    StartTest();
+    time_t end = time(NULL);
+    printf("Execution time: %d seconds\n", (int)(end - start));
+}
+#endif 
 
 //int main(int argc, char* args[]) {
 //   // printf("Dataset\n");
