@@ -1,26 +1,8 @@
-# PaintAI 🖌️
+# Convoluted RandomForest classifiers  🖌️
 
-[//]: # (To view this page with graphic comfort please follow this link:)
-[//]: # (https://github.com/0xPierre/ClassificationTP)
-
-<p align="center">
-  <a href="https://gitlab.com/m9712/mygarden/-/blob/master/LICENSE">
-    <img src="https://img.shields.io/badge/license-GPLv3-blue.svg?style=flat-square" alt="MyGarden is released under the GPLv3 license." />
-  </a>
-  <a href="https://liberapay.com/MyGarden/">
-    <img src="https://img.shields.io/liberapay/gives/MyGarden.svg?logo=liberapay&style=flat-square" alt="liberapay MyGarden" />
-  </a>
-
-</p>
-
-
-**A simple app to learn numbers**
+We made this during a school rush of 5 days. The goal was to develop a random forest classifiers of differents datasets. We achieved to made up to 98.6% of success on MNIST with our algorithms. It is made with [BugProg](https://github.com/bugprog).
 
 ![](./docs/img.png)
-
-Paint AI is built with kind of Technologies😃:  
-[![C](https://img.shields.io/badge/C-3178c6?style=for-the-badge&logo=c&labelColor=gray)](https://www.typescriptlang.org/)
-[![Linux](https://img.shields.io/badge/Linux-DD0031?style=for-the-badge&logo=linux&labelColor=gray)](https://kernel.org)
 
 Gcc command on linux in ClassificationTP folder: 
 `gcc *.c -lm -fopenmp -lSDL2 -lSDL2_image -lSDL2_ttf  -lSDL2_mixer`
@@ -97,21 +79,3 @@ Improve dataset quality by removing parasite pixels and more...
 Have a good function is good but have good functions and coefficient parameters is better 😆.
 That why we created several functions to find the best coefficient for our functions.
 We used an AWS server with 24 CPU core to do this.
-
-## How to contribute 🚀
-
-Thank you for your contribution to the open source world !😍
-
-- Contact us by email
-- Open a MR
-
-## Support 🛟
-
-If you need assistance or want to ask a question about the app, you are welcome to ask for support in our
-Forums.
-If you have found a bug, feel free to open a new Issue on Gitlab.
-
-## Licence 📜
-
-The app core is under GPLv3 but be careful Images and sounds data are limited are restricted to
-copyright.
