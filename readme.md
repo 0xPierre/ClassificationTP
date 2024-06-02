@@ -1,6 +1,6 @@
 # Convoluted RandomForest classifiers  🖌️
 
-We made this during a school rush of 5 days. The goal was to develop a random forest classifiers of differents datasets. We achieved to made up to 98.6% of success on MNIST with our algorithms. It is made with [BugProg](https://github.com/bugprog).
+The goal was to develop a random forest classifiers of differents datasets. We achieved to made up to 98.6% of success on MNIST with our algorithms. I made it with [BugProg](https://github.com/bugprog) during a school rush of 5 days.
 
 ![](./docs/img.png)
 
